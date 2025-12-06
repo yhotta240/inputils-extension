@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="iframe.css">
+  <style>
+    body {
+      font-size: 12px !important;
+      background-color: #18181b !important;
+      color: #e5e7eb;
+    }
+
+    .bg-custom-dark {
+      background-color: #18181b !important;
+    }
+
+    .btn-dark {
+      --bs-btn-bg: rgba(24, 24, 27) !important;
+      --bs-btn-border-color: rgba(24, 24, 27) !important;
+      --bs-btn-hover-border-color: rgba(24, 24, 27) !important;
+    }
+
+    /* スクロールバー全体 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      /* 横幅 */
+      height: 8px;
+      /* 縦幅 */
+    }
+
+    /* スクロールバーの背景 */
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+      /* 角丸 */
+    }
+
+    /* スクロールバーのつまみ */
+    ::-webkit-scrollbar-thumb {
+      background-color: #888;
+      /* つまみの色 */
+      border-radius: 10px;
+      /* 角丸 */
+    }
+
+    /* スクロールバーのつまみ（ホバー時） */
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #555;
+      /* ホバー時の色 */
+    }
+
+    .text-custom {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .text-custom:hover {
+      color: white;
+    }
+
+    .text-custom:focus {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center sticky-top bg-custom-dark">
+      <select id="select-set-name" class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white"
+        style="width: 35%;" aria-label="select example">
+        <option value="1" class="bg-custom-dark text-white">One</option>
+        <option value="2" class="bg-custom-dark text-white">Two</option>
+        <option value="3" class="bg-custom-dark text-white">Three</option>
+      </select>
+      <div class="d-flex gap-1 me-2">
+        <!-- タブナビゲーション -->
+        <ul class="nav nav-underline gap-1" id="tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active p-0 text-white-50" id="templates-tab" data-bs-toggle="tab"
+              data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="true"
+              style="width: 25px; height: 25px;" title="定型文">
+              <i class="bi bi-chat-left-dots" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link p-0 text-white-50" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
+              type="button" role="tab" aria-controls="history" aria-selected="false" style="width: 25px; height: 25px;"
+              title="履歴">
+              <i class="bi bi-clock-history" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link p-0 text-white-50" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings"
+              type="button" role="tab" aria-controls="settings" aria-selected="false" style="width: 25px; height: 25px;"
+              title="設定">
+              <i class="bi bi-gear-fill" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+        </ul>
+        <button type="button" id="panel-collapse-icon" class="d-none btn btn-sm p-0 text-white-50 btn-dark"
+          data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="折りたたむ"
+          style="width: 25px; height: 25px;">
+          <i class="bi bi-arrow-bar-down" style="font-size: 16px; line-height: 1;"></i>
+        </button>
+        <button type="button" id="panel-expand-icon" class="btn btn-sm p-0 text-white-50 btn-dark"
+          data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="展開"
+          style="width: 25px; height: 25px;">
+          <i class="bi bi-arrow-bar-up" style="font-size: 20px; line-height: 1;"></i>
+        </button>
+        <button type="button" id="panel-close-icon" class="btn btn-sm p-0 text-white-50 btn-dark"
+          data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="閉じる"
+          style="width: 25px; height: 25px;">
+          <i class="bi bi-x" style="font-size: 20px; line-height: 1;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- タブコンテンツ -->
+    <div class="tab-content">
+      <!-- 定型文タブ -->
+      <div class="tab-pane fade show active pt-2" id="templates">
+        <div class="d-flex">
+          <button id="left-arrow" type="button" class="btn p-0">
+            <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+          </button>
+          <div class="btn-group d-flex flex-nowrap overflow-x-auto" role="group" style="gap: 0.5rem;">
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
+              <small class="text-custom d-block">お世話になっております...</small>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="ご確認のほどよろしくお願いいたします。&#10;&#10;何かご不明な点がございましたら、お気軽にお申し付けください。">
+              <small class="text-custom d-block">ご確認のほどよろしくお願いいたします...</small>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="お疲れ様です。&#10;&#10;進捗状況について共有させていただきます。">
+              <small class="text-custom d-block">お疲れ様です。進捗状況について...</small>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="ありがとうございます。&#10;&#10;承知いたしました。対応させていただきます。">
+              <small class="text-custom d-block">ありがとうございます。承知いたしました...</small>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="申し訳ございません。&#10;&#10;再度確認の上、ご連絡させていただきます。">
+              <small class="text-custom d-block">申し訳ございません。再度確認の上...</small>
+            </button>
+          </div>
+          <button id="right-arrow" type="button" class="btn p-0">
+            <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 履歴タブ -->
+      <div class="tab-pane fade pt-2" id="history">
+        <div class="mb-2 w-100 d-flex justify-content-between" id="template-chat">
+          <button id="left-arrow" type="button" class="btn p-0">
+            <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+          </button>
+          <div class="btn-group d-flex flex-nowrap overflow-x-auto" role="group" style="gap: 0.5rem;">
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+              data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
+              <small class="text-custom d-block">お世話になっております...</small>
+            </button>
+          </div>
+          <button id="right-arrow" type="button" class="btn p-0">
+            <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 設定タブ -->
+      <div class="tab-pane fade pt-2" id="settings">
+        <div class="list-group list-group-flush">
+          <div class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="autoShow" class="form-label mb-0">パネルを自動表示</label>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="autoShow" checked>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="saveHistory" class="form-label mb-0">入力履歴を保存</label>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="saveHistory" checked>
+              </div>
+            </div>
+          </div>
+          <div class="list-group-item text-white border-secondary border-0 py-2 bg-custom-dark text-custom">
+            <div class="d-flex justify-content-between align-items-center">
+              <label for="shortcut" class="form-label mb-0">ショートカット</label>
+              <input type="text" class="form-control form-control-sm text-white border-secondary" id="shortcut"
+                value="/" maxlength="1" style="width: 60px;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
