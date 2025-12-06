@@ -16,6 +16,7 @@ module.exports = {
       "bootstrap/dist/css/bootstrap.min.css",
       "bootstrap/dist/js/bootstrap.bundle.min.js",
     ],
+    "bootstrap-icons": "bootstrap-icons/font/bootstrap-icons.min.css",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
