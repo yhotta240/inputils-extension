@@ -1,9 +1,12 @@
-const DEFAULT_EXPANDED_HEIGHT = 400;
+const DEFAULT_EXPANDED_HEIGHT: number = 400;
 
 export class IframeContent {
   private iframeDoc: Document | null | undefined = null;
   private panel: HTMLDivElement | null = null;
   private preIframeHeight: number = 0;
+  private expandedHeight: number = 0; // 展開時の実際の高さ
+  private isCollapsed: boolean = false; // 折りたたみ状態
+  private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
 
   constructor() { }
 
@@ -14,10 +17,9 @@ export class IframeContent {
     iframe.id = 'inputils-iframe-content';
     iframe.style.cssText = `
       width: 100%;
-      height: 80px;
+      height: 84px;
       border: none;
       visibility: hidden;
-      transition: height 0.3s ease;
     `;
 
     // iframe.html を取得して Blob URL として返す
@@ -96,6 +98,18 @@ export class IframeContent {
     this.panel = panel;
   }
 
+  /** パネルが折りたたみ状態かどうかを返す */
+  public isCollapsedState(): boolean {
+    return this.isCollapsed;
+  }
+
+  /** パネルが入力欄の下にあるかどうかを判定 */
+  public isPanelBelowInput(inputBottom: number): boolean {
+    if (!this.panel) return false;
+    const panelTop = parseInt(this.panel.style.top);
+    return panelTop >= inputBottom;
+  }
+
   private addEventListeners(): void {
     if (!this.iframeDoc) return;
 
@@ -130,9 +144,6 @@ export class IframeContent {
 
   /** パネル制御ボタン（閉じる・展開・折りたたみ）のイベントを設定 */
   private setupPanelControlListeners(): void {
-    const iframe = this.iframeDoc!.defaultView!.frameElement as HTMLIFrameElement;
-    const btnArrows = this.iframeDoc!.querySelectorAll<HTMLElement>('.btn-arrow');
-    const btnContainers = this.iframeDoc!.querySelectorAll<HTMLElement>('.btn-container');
     const closeBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-close-icon');
     const expandBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-expand-icon');
     const collapseBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-collapse-icon');
@@ -145,31 +156,95 @@ export class IframeContent {
     }
 
     // 展開・折りたたみボタン
-    if (expandBtn && collapseBtn && this.panel) {
+    if (expandBtn && collapseBtn) {
       expandBtn.addEventListener('click', () => {
-        expandBtn.classList.add('d-none');
-        collapseBtn.classList.remove('d-none');
-        btnArrows.forEach(btn => btn.classList.add('d-none'));
-        btnContainers.forEach(container => container.classList.remove('d-flex'));
-
-        this.preIframeHeight = iframe.clientHeight;
-        iframe.style.height = `${DEFAULT_EXPANDED_HEIGHT}px`;
-        const panelTop = this.panel!.style.top;
-        this.panel!.style.top = parseInt(panelTop) - (DEFAULT_EXPANDED_HEIGHT - this.preIframeHeight) + 'px';
+        // パネル位置は親ウィンドウから渡される
+        window.parent.postMessage({ type: 'expandPanel' }, '*');
       });
 
       collapseBtn.addEventListener('click', () => {
-        collapseBtn.classList.add('d-none');
-        expandBtn.classList.remove('d-none');
-        btnArrows.forEach(btn => btn.classList.remove('d-none'));
-        btnContainers.forEach(container => container.classList.add('d-flex'));
-
-        iframe.style.height = `${this.preIframeHeight}px`;
-        const panelTop = this.panel!.style.top;
-        this.panel!.style.top = parseInt(panelTop) + (DEFAULT_EXPANDED_HEIGHT - this.preIframeHeight) + 'px';
-        this.preIframeHeight = 0;
+        this.toggleExpandCollapse(false);
       });
     }
+  }
+
+  /** パネルの展開・折りたたみを切り替え */
+  public toggleExpandCollapse(expand: boolean, isBelowInput: boolean = false): void {
+    if (!this.iframeDoc || !this.panel) return;
+
+    const iframe = this.iframeDoc.defaultView!.frameElement as HTMLIFrameElement;
+    const expandBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-expand-icon');
+    const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
+    const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
+    const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
+
+    if (!expandBtn || !collapseBtn) return;
+
+    // UI状態の切り替え
+    if (expand) {
+      expandBtn.classList.add('d-none');
+      collapseBtn.classList.remove('d-none');
+      btnArrows.forEach(btn => btn.classList.add('d-none'));
+      btnContainers.forEach(container => container.classList.remove('d-flex'));
+    } else {
+      collapseBtn.classList.add('d-none');
+      expandBtn.classList.remove('d-none');
+      btnArrows.forEach(btn => btn.classList.remove('d-none'));
+      btnContainers.forEach(container => container.classList.add('d-flex'));
+    }
+
+    // サイズと位置の更新
+    if (expand) {
+      this.expandPanel(iframe, isBelowInput);
+    } else {
+      this.collapsePanel(iframe);
+    }
+  }
+
+  /** パネルを展開 */
+  private expandPanel(iframe: HTMLIFrameElement, isBelowInput: boolean): void {
+    this.preIframeHeight = iframe.clientHeight;
+    const currentTop = parseInt(this.panel!.style.top);
+    let height = DEFAULT_EXPANDED_HEIGHT;
+    let top = currentTop;
+
+    if (isBelowInput) {
+      // 下配置: topを固定、画面下端までの高さを制限
+      const availableHeight = window.innerHeight - currentTop - 20;
+      height = Math.min(DEFAULT_EXPANDED_HEIGHT, availableHeight);
+    } else {
+      // 上配置: 下端を固定して上に伸ばす
+      const minTopMargin = 26;
+      const heightDiff = height - this.preIframeHeight;
+      top = currentTop - heightDiff;
+
+      if (top < minTopMargin) {
+        height -= (minTopMargin - top);
+        top = minTopMargin;
+      }
+    }
+
+    iframe.style.height = `${height}px`;
+    this.panel!.style.top = `${top}px`;
+    this.expandedHeight = height;
+    this.wasBelowInput = isBelowInput;
+    this.isCollapsed = false;
+  }
+
+  /** パネルを折りたたみ */
+  private collapsePanel(iframe: HTMLIFrameElement): void {
+    iframe.style.height = `${this.preIframeHeight}px`;
+
+    // 上配置の場合のみtopを調整
+    if (!this.wasBelowInput) {
+      const currentTop = parseInt(this.panel!.style.top);
+      this.panel!.style.top = `${currentTop + (this.expandedHeight - this.preIframeHeight)}px`;
+    }
+
+    this.preIframeHeight = 0;
+    this.expandedHeight = 0;
+    this.wasBelowInput = false;
+    this.isCollapsed = true;
   }
 
   /** 矢印ボタンのスクロールイベントを設定 */

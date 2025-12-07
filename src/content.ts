@@ -14,10 +14,6 @@ class ContentScript {
         this.inputPanel.hide(); // 入力要素でなければパネルを非表示
       }
     });
-
-    document.addEventListener("input", (event) => {
-      this.setInputElement(event.target)
-    });
   }
 
   /** 初期化処理 */
