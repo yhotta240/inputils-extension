@@ -37,7 +37,7 @@ export class InputPanel {
 
   /** パネルを非表示 */
   public hide(): void {
-    if (this.panel) {
+    if (this.panel && !this.isInteractingWithPanel()) {
       this.panel.style.display = 'none';
     }
   }
