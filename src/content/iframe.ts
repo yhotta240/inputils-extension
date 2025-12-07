@@ -1,5 +1,7 @@
 export class IframeContent {
   private iframeDoc: Document | null | undefined = null;
+  private panel: HTMLDivElement | null = null;
+  private preIframeHeight: number = 0;
 
   constructor() { }
 
@@ -13,6 +15,7 @@ export class IframeContent {
       height: 80px;
       border: none;
       visibility: hidden;
+      transition: height 0.3s ease;
     `;
 
     // iframe.html を取得して Blob URL として返す
@@ -88,31 +91,63 @@ export class IframeContent {
 
   private addEventListeners(): void {
     if (!this.iframeDoc) return;
+
+    // 各種ボタン要素の取得
+    const iframe = this.iframeDoc!.defaultView!.frameElement as HTMLIFrameElement;
+    const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
+    const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
+    const closeBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-close-icon');
+    const expandBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-expand-icon');
+    const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
+
     // 定型文・スニペットのクリックイベント
     this.iframeDoc.querySelectorAll('.template-item').forEach(item => {
       item.addEventListener('click', () => {
         const text = item.getAttribute('data-text') || '';
 
-        window.parent.postMessage({
-          type: 'insertText',
-          text: text
-        }, '*');
+        window.parent.postMessage({ type: 'insertText', text: text }, '*');
       });
     });
 
-    // パネル閉じるボタンのクリックイベント
-    const closeBtn = this.iframeDoc.getElementById('panel-close-icon');
-    closeBtn?.addEventListener('click', () => {
-      window.parent.postMessage({ type: 'closePanel' }, '*');
-    });
-
     // パネル内のマウスイベントを親に通知
-    this.iframeDoc.addEventListener('mousedown', () => {
-      window.parent.postMessage({ type: 'frameMouseDown' }, '*');
-    });
+    this.iframeDoc.addEventListener('mousedown', () => window.parent.postMessage({ type: 'frameMouseDown' }, '*'));
+    this.iframeDoc.addEventListener('mouseup', () => window.parent.postMessage({ type: 'frameMouseUp' }, '*'));
 
-    this.iframeDoc.addEventListener('mouseup', () => {
-      window.parent.postMessage({ type: 'frameMouseUp' }, '*');
-    });
+    // パネル閉じるボタンのクリックイベント
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => window.parent.postMessage({ type: 'closePanel' }, '*'));
+    }
+
+    // パネル展開・折りたたみボタンのクリックイベント
+    if (expandBtn && collapseBtn && this.panel) {
+      expandBtn.addEventListener('click', () => {
+        expandBtn.classList.add('d-none');
+        collapseBtn.classList.remove('d-none');
+        btnArrows.forEach(btn => btn.classList.add('d-none'));
+        btnContainers.forEach(container => container.classList.remove('d-flex'));
+
+        this.preIframeHeight = iframe.clientHeight; // 現在の高さを保存 84px
+        iframe.style.height = `${400}px`; // 展開後の高さ 400px
+        const panelTop = this.panel!.style.top; // 現在の top 値を取得
+        this.panel!.style.top = parseInt(panelTop) - (400 - this.preIframeHeight) + 'px'; // top を調整
+      });
+
+      collapseBtn.addEventListener('click', () => {
+        collapseBtn.classList.add('d-none');
+        expandBtn.classList.remove('d-none');
+        btnArrows.forEach(btn => btn.classList.remove('d-none'));
+        btnContainers.forEach(container => container.classList.add('d-flex'));
+
+        iframe.style.height = `${this.preIframeHeight}px`; // 折りたたみ後の高さに戻す
+        const panelTop = this.panel!.style.top; // 現在の top 値を取得
+        this.panel!.style.top = parseInt(panelTop) + (400 - this.preIframeHeight) + 'px'; // top を調整
+        this.preIframeHeight = 0;
+      });
+    }
+  }
+
+  /** パネル要素を設定するメソッドを追加 */
+  public setPanel(panel: HTMLDivElement): void {
+    this.panel = panel;
   }
 }

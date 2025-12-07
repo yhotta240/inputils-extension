@@ -28,6 +28,7 @@ export class InputPanel {
     }
 
     this.panel = this.createFloatingPanel(input);
+    this.iframeContent.setPanel(this.panel); // パネルを iframeContent に渡す
     const iframe = await this.iframeContent.create();
     this.panel.appendChild(iframe);
 

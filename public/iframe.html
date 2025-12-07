@@ -100,17 +100,17 @@
         </ul>
         <button type="button" id="panel-collapse-icon" class="d-none btn btn-sm p-0 text-white-50 btn-dark"
           data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="折りたたむ"
-          style="width: 25px; height: 25px;">
+          style="width: 25px; height: 25px;" title="折りたたむ">
           <i class="bi bi-arrow-bar-down" style="font-size: 16px; line-height: 1;"></i>
         </button>
         <button type="button" id="panel-expand-icon" class="btn btn-sm p-0 text-white-50 btn-dark"
           data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="展開"
-          style="width: 25px; height: 25px;">
+          style="width: 25px; height: 25px;" title="展開">
           <i class="bi bi-arrow-bar-up" style="font-size: 20px; line-height: 1;"></i>
         </button>
         <button type="button" id="panel-close-icon" class="btn btn-sm p-0 text-white-50 btn-dark"
           data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="閉じる"
-          style="width: 25px; height: 25px;">
+          style="width: 25px; height: 25px;" title="閉じる">
           <i class="bi bi-x" style="font-size: 20px; line-height: 1;"></i>
         </button>
       </div>
@@ -121,10 +121,10 @@
       <!-- 定型文タブ -->
       <div class="tab-pane fade show active pt-2" id="templates">
         <div class="d-flex">
-          <button id="left-arrow" type="button" class="btn p-0">
+          <button id="left-arrow" type="button" class="btn p-0 btn-arrow">
             <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
           </button>
-          <div class="btn-group d-flex flex-nowrap overflow-x-auto" role="group" style="gap: 0.5rem;">
+          <div class="d-flex overflow-x-auto btn-container" role="group" style="gap: 0.5rem;">
             <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
               data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
               <small class="text-custom d-block">お世話になっております...</small>
@@ -146,7 +146,7 @@
               <small class="text-custom d-block">申し訳ございません。再度確認の上...</small>
             </button>
           </div>
-          <button id="right-arrow" type="button" class="btn p-0">
+          <button id="right-arrow" type="button" class="btn p-0 btn-arrow">
             <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
           </button>
         </div>
@@ -155,16 +155,16 @@
       <!-- 履歴タブ -->
       <div class="tab-pane fade pt-2" id="history">
         <div class="mb-2 w-100 d-flex justify-content-between" id="template-chat">
-          <button id="left-arrow" type="button" class="btn p-0">
+          <button id="left-arrow" type="button" class="btn p-0 btn-arrow">
             <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
           </button>
-          <div class="btn-group d-flex flex-nowrap overflow-x-auto" role="group" style="gap: 0.5rem;">
+          <div class="d-flex overflow-x-auto btn-container" role="group" style="gap: 0.5rem;">
             <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
               data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
               <small class="text-custom d-block">お世話になっております...</small>
             </button>
           </div>
-          <button id="right-arrow" type="button" class="btn p-0">
+          <button id="right-arrow" type="button" class="btn p-0 btn-arrow">
             <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
           </button>
         </div>
@@ -173,7 +173,8 @@
       <!-- 設定タブ -->
       <div class="tab-pane fade pt-2" id="settings">
         <div class="list-group list-group-flush">
-          <div class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+          <div
+            class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
             <div class="d-flex justify-content-between align-items-center">
               <label for="autoShow" class="form-label mb-0">パネルを自動表示</label>
               <div class="form-check form-switch mb-0">
@@ -181,7 +182,8 @@
               </div>
             </div>
           </div>
-          <div class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+          <div
+            class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
             <div class="d-flex justify-content-between align-items-center">
               <label for="saveHistory" class="form-label mb-0">入力履歴を保存</label>
               <div class="form-check form-switch mb-0">
