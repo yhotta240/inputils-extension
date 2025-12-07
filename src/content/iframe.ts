@@ -89,36 +89,60 @@ export class IframeContent {
     }, { once: true });
   }
 
+  /** パネル要素を設定するメソッドを追加 */
+  public setPanel(panel: HTMLDivElement): void {
+    this.panel = panel;
+  }
+
   private addEventListeners(): void {
     if (!this.iframeDoc) return;
 
-    // 各種ボタン要素の取得
-    const iframe = this.iframeDoc!.defaultView!.frameElement as HTMLIFrameElement;
-    const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
-    const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
-    const closeBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-close-icon');
-    const expandBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-expand-icon');
-    const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
+    this.setupTemplateItemListeners();
+    this.setupMouseEventListeners();
+    this.setupPanelControlListeners();
+    this.setupArrowScrollListeners();
+  }
 
-    // 定型文・スニペットのクリックイベント
-    this.iframeDoc.querySelectorAll('.template-item').forEach(item => {
+  /** 定型文アイテムのクリックイベントを設定 */
+  private setupTemplateItemListeners(): void {
+    const templateItems = this.iframeDoc!.querySelectorAll<HTMLElement>('.template-item');
+
+    templateItems.forEach(item => {
       item.addEventListener('click', () => {
         const text = item.getAttribute('data-text') || '';
-
         window.parent.postMessage({ type: 'insertText', text: text }, '*');
       });
     });
+  }
 
-    // パネル内のマウスイベントを親に通知
-    this.iframeDoc.addEventListener('mousedown', () => window.parent.postMessage({ type: 'frameMouseDown' }, '*'));
-    this.iframeDoc.addEventListener('mouseup', () => window.parent.postMessage({ type: 'frameMouseUp' }, '*'));
+  /** マウスイベントのリスナーを設定 */
+  private setupMouseEventListeners(): void {
+    this.iframeDoc!.addEventListener('mousedown', () => {
+      window.parent.postMessage({ type: 'frameMouseDown' }, '*');
+    });
 
-    // パネル閉じるボタンのクリックイベント
+    this.iframeDoc!.addEventListener('mouseup', () => {
+      window.parent.postMessage({ type: 'frameMouseUp' }, '*');
+    });
+  }
+
+  /** パネル制御ボタン（閉じる・展開・折りたたみ）のイベントを設定 */
+  private setupPanelControlListeners(): void {
+    const iframe = this.iframeDoc!.defaultView!.frameElement as HTMLIFrameElement;
+    const btnArrows = this.iframeDoc!.querySelectorAll<HTMLElement>('.btn-arrow');
+    const btnContainers = this.iframeDoc!.querySelectorAll<HTMLElement>('.btn-container');
+    const closeBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-close-icon');
+    const expandBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-expand-icon');
+    const collapseBtn = this.iframeDoc!.querySelector<HTMLElement>('#panel-collapse-icon');
+
+    // 閉じるボタン
     if (closeBtn) {
-      closeBtn.addEventListener('click', () => window.parent.postMessage({ type: 'closePanel' }, '*'));
+      closeBtn.addEventListener('click', () => {
+        window.parent.postMessage({ type: 'closePanel' }, '*');
+      });
     }
 
-    // パネル展開・折りたたみボタンのクリックイベント
+    // 展開・折りたたみボタン
     if (expandBtn && collapseBtn && this.panel) {
       expandBtn.addEventListener('click', () => {
         expandBtn.classList.add('d-none');
@@ -126,10 +150,10 @@ export class IframeContent {
         btnArrows.forEach(btn => btn.classList.add('d-none'));
         btnContainers.forEach(container => container.classList.remove('d-flex'));
 
-        this.preIframeHeight = iframe.clientHeight; // 現在の高さを保存 84px
-        iframe.style.height = `${400}px`; // 展開後の高さ 400px
-        const panelTop = this.panel!.style.top; // 現在の top 値を取得
-        this.panel!.style.top = parseInt(panelTop) - (400 - this.preIframeHeight) + 'px'; // top を調整
+        this.preIframeHeight = iframe.clientHeight;
+        iframe.style.height = '400px';
+        const panelTop = this.panel!.style.top;
+        this.panel!.style.top = parseInt(panelTop) - (400 - this.preIframeHeight) + 'px';
       });
 
       collapseBtn.addEventListener('click', () => {
@@ -138,16 +162,61 @@ export class IframeContent {
         btnArrows.forEach(btn => btn.classList.remove('d-none'));
         btnContainers.forEach(container => container.classList.add('d-flex'));
 
-        iframe.style.height = `${this.preIframeHeight}px`; // 折りたたみ後の高さに戻す
-        const panelTop = this.panel!.style.top; // 現在の top 値を取得
-        this.panel!.style.top = parseInt(panelTop) + (400 - this.preIframeHeight) + 'px'; // top を調整
+        iframe.style.height = `${this.preIframeHeight}px`;
+        const panelTop = this.panel!.style.top;
+        this.panel!.style.top = parseInt(panelTop) + (400 - this.preIframeHeight) + 'px';
         this.preIframeHeight = 0;
       });
     }
   }
 
-  /** パネル要素を設定するメソッドを追加 */
-  public setPanel(panel: HTMLDivElement): void {
-    this.panel = panel;
+  /** 矢印ボタンのスクロールイベントを設定 */
+  private setupArrowScrollListeners(): void {
+    this.setupArrowScroll('templates-left-arrow', 'templates-right-arrow');
+    this.setupArrowScroll('history-left-arrow', 'history-right-arrow');
+  }
+
+  /** 矢印ボタンでコンテナをスクロールする機能を設定 */
+  private setupArrowScroll(leftArrowId: string, rightArrowId: string, containerId?: string): void {
+    const leftArrow = this.iframeDoc!.querySelector<HTMLElement>(`#${leftArrowId}`);
+    const rightArrow = this.iframeDoc!.querySelector<HTMLElement>(`#${rightArrowId}`);
+
+    if (!leftArrow || !rightArrow) return;
+
+    // コンテナを取得
+    let container: HTMLElement | null = null;
+    if (containerId) {
+      container = this.iframeDoc!.querySelector<HTMLElement>(`#${containerId}`);
+    } else {
+      container = leftArrow.nextElementSibling as HTMLElement;
+    }
+
+    if (!container) return;
+
+    leftArrow.addEventListener('click', () => {
+      const scrollAmount = this.calculateScrollAmount(container!);
+      container!.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    rightArrow.addEventListener('click', () => {
+      const scrollAmount = this.calculateScrollAmount(container!);
+      container!.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+  }
+
+  /** スクロール量を計算 */
+  private calculateScrollAmount(container: HTMLElement): number {
+    const containerWidth = container.clientWidth;
+    const firstButton = container.querySelector<HTMLElement>('.template-item, button');
+
+    if (firstButton) {
+      const buttonWidth = firstButton.offsetWidth;
+      const gap = 8; // 0.5rem
+      const visibleButtons = Math.floor(containerWidth / (buttonWidth + gap));
+      return visibleButtons * (buttonWidth + gap);
+    }
+
+    // デフォルトはコンテナ幅の80%
+    return containerWidth * 0.8;
   }
 }
