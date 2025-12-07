@@ -1,3 +1,5 @@
+const DEFAULT_EXPANDED_HEIGHT = 400;
+
 export class IframeContent {
   private iframeDoc: Document | null | undefined = null;
   private panel: HTMLDivElement | null = null;
@@ -151,9 +153,9 @@ export class IframeContent {
         btnContainers.forEach(container => container.classList.remove('d-flex'));
 
         this.preIframeHeight = iframe.clientHeight;
-        iframe.style.height = '400px';
+        iframe.style.height = `${DEFAULT_EXPANDED_HEIGHT}px`;
         const panelTop = this.panel!.style.top;
-        this.panel!.style.top = parseInt(panelTop) - (400 - this.preIframeHeight) + 'px';
+        this.panel!.style.top = parseInt(panelTop) - (DEFAULT_EXPANDED_HEIGHT - this.preIframeHeight) + 'px';
       });
 
       collapseBtn.addEventListener('click', () => {
@@ -164,7 +166,7 @@ export class IframeContent {
 
         iframe.style.height = `${this.preIframeHeight}px`;
         const panelTop = this.panel!.style.top;
-        this.panel!.style.top = parseInt(panelTop) + (400 - this.preIframeHeight) + 'px';
+        this.panel!.style.top = parseInt(panelTop) + (DEFAULT_EXPANDED_HEIGHT - this.preIframeHeight) + 'px';
         this.preIframeHeight = 0;
       });
     }
