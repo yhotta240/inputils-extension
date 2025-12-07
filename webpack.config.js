@@ -21,7 +21,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
-    clean: true
+    clean: !isDev // 開発環境ではdistフォルダをクリーンしない
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
@@ -41,12 +41,31 @@ module.exports = {
   },
   plugins: (() => {
     const plugins = [
-      new CopyWebpackPlugin({ patterns: [{ from: "./public", to: "./" }] })
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: "./public",
+            to: "./",
+            transform(content, absoluteFrom) {
+              if (isDev) return content;
+              // manifest.jsonの場合、tabs権限を削
+              if (absoluteFrom.endsWith('manifest.json')) {
+                const manifest = JSON.parse(content.toString());
+                if (manifest.permissions) {
+                  manifest.permissions = manifest.permissions.filter(p => p !== 'tabs');
+                }
+                return JSON.stringify(manifest, null, 2);
+              }
+              return content;
+            }
+          }
+        ]
+      })
     ];
-    if (isDev) {
-      plugins.unshift(new ExtensionReloader());
-    }
-    plugins.push(new MiniCssExtractPlugin());
+    plugins.push(new ExtensionReloader());
+    plugins.push(new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }));
     return plugins;
   })(),
   performance: {
