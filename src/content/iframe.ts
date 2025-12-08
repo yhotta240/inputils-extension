@@ -1,4 +1,4 @@
-const DEFAULT_EXPANDED_HEIGHT: number = 400;
+const DEFAULT_EXPANDED_HEIGHT: number = 250;
 
 export class IframeContent {
   private iframeDoc: Document | null | undefined = null;
