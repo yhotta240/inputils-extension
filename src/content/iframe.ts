@@ -18,6 +18,7 @@ export class IframeContent {
     iframe.style.cssText = `
       width: 100%;
       height: 84px;
+      max-height: ${DEFAULT_EXPANDED_HEIGHT}px;
       border: none;
       visibility: hidden;
     `;
@@ -181,17 +182,10 @@ export class IframeContent {
     if (!expandBtn || !collapseBtn) return;
 
     // UI状態の切り替え
-    if (expand) {
-      expandBtn.classList.add('d-none');
-      collapseBtn.classList.remove('d-none');
-      btnArrows.forEach(btn => btn.classList.add('d-none'));
-      btnContainers.forEach(container => container.classList.remove('d-flex'));
-    } else {
-      collapseBtn.classList.add('d-none');
-      expandBtn.classList.remove('d-none');
-      btnArrows.forEach(btn => btn.classList.remove('d-none'));
-      btnContainers.forEach(container => container.classList.add('d-flex'));
-    }
+    expandBtn.classList.toggle('d-none', expand);
+    collapseBtn.classList.toggle('d-none', !expand);
+    btnArrows.forEach(btn => btn.classList.toggle('d-none', expand));
+    btnContainers.forEach(container => container.classList.toggle('d-flex', !expand));
 
     // サイズと位置の更新
     if (expand) {

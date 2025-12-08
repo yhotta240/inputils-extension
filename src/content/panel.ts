@@ -3,6 +3,7 @@ import { insertText } from "./input";
 
 const TOP_MARGIN: number = 26; // パネルと入力欄の間のマージン
 const BOTTOM_MARGIN: number = 8; // パネルと入力欄の間のマージン
+const DEFAULT_PANEL_HEIGHT: number = 84;
 
 export class InputPanel {
   private panel: HTMLDivElement | null = null;
@@ -53,9 +54,15 @@ export class InputPanel {
   private updatePosition(input: HTMLElement): void {
     if (!this.panel) return;
 
-    const panelHeight = this.panel.offsetHeight > 0 ? this.panel.offsetHeight : 84;
+    // パネルの高さを取得（0 の場合はデフォルト値）
+    const panelHeight = this.panel.offsetHeight > 0 ? this.panel.offsetHeight : DEFAULT_PANEL_HEIGHT;
+
     const inputRect = input.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    // left が画面外に出ないように調整
+    const left = Math.min(inputRect.left, viewportWidth - Math.min(inputRect.width, 600) - 5);
 
     // 入力欄の上下のスペースを計算
     const spaceAbove = inputRect.top;
@@ -64,7 +71,7 @@ export class InputPanel {
     let calculatedTop = 0;
     let shouldPlaceAbove = false;
 
-    // 上に十分なスペースがあるか確認
+    // パネルの上下配置判定
     if (spaceAbove >= panelHeight + TOP_MARGIN) {
       // 上に配置
       calculatedTop = inputRect.top - panelHeight - TOP_MARGIN;
@@ -76,20 +83,18 @@ export class InputPanel {
     } else {
       // どちらにも収まらない場合は広い方に配置
       if (spaceAbove > spaceBelow) {
-        // 上に配置（高さを調整）
         calculatedTop = TOP_MARGIN;
         shouldPlaceAbove = true;
       } else {
-        // 下に配置
         calculatedTop = inputRect.bottom + BOTTOM_MARGIN;
         shouldPlaceAbove = false;
       }
     }
 
+    // 最終位置の適用
     this.panel.style.top = `${calculatedTop}px`;
-    this.panel.style.left = `${inputRect.left}px`;
+    this.panel.style.left = `${left}px`;
     this.panel.style.width = `${Math.min(inputRect.width, 600)}px`;
-    this.panel.style.maxWidth = '90vw';
     this.panel.style.backgroundColor = '#18181b';
   }
 
@@ -100,7 +105,7 @@ export class InputPanel {
     const viewportHeight = window.innerHeight;
 
     // 初期パネル高さを仮定（iframe の初期高さ + padding）
-    const estimatedPanelHeight = 84;
+    const estimatedPanelHeight = DEFAULT_PANEL_HEIGHT;
     const spaceAbove = inputRect.top;
     const spaceBelow = viewportHeight - inputRect.bottom;
 
@@ -125,7 +130,7 @@ export class InputPanel {
       top: `${top}px`,
       left: `${inputRect.left}px`,
       width: `${Math.min(inputRect.width, 600)}px`,
-      maxWidth: '90vw',
+      minWidth: '300px',
       height: 'fit-content',
       backgroundColor: '#18181b',
       borderRadius: '12px',
