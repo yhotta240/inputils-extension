@@ -14,10 +14,6 @@ class ContentScript {
         this.inputPanel.hide(); // 入力要素でなければパネルを非表示
       }
     });
-
-    document.addEventListener("input", (event) => {
-      this.setInputElement(event.target)
-    });
   }
 
   /** 初期化処理 */
@@ -56,17 +52,8 @@ class ContentScript {
     if (text.length > 0) {
       if (text.startsWith("/")) {
         this.inputPanel.show(targetElement);
-      } else if (text.includes("/")) {
-        this.inputPanel.show(targetElement);
-        const panel = this.inputPanel.getPanel();
-        let panelTop = panel?.style.top;
-        if (!panel || !panelTop) return;
-        const topValue = parseFloat(panelTop);
-
-        // パネルが画面外に出ている場合のみ位置を調整
-        if (topValue >= window.innerHeight) {
-          panel.style.top = "10px";
-        }
+      } else {
+        this.inputPanel.hide();
       }
     } else {
       this.inputPanel.hide();
