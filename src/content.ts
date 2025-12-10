@@ -56,8 +56,10 @@ class ContentScript {
         this.inputPanel.show(targetElement);
       } else if (selection && selection.toString().length > 0) {
         //input要素内でテキストが選択されたとき
+        const selectedText = selection.toString();
         this.inputPanel.getIframe().activeToolsTab();
         this.inputPanel.show(targetElement);
+        this.inputPanel.getIframe().setSelectedText(selectedText);
       } else {
         this.inputPanel.hide();
       }
