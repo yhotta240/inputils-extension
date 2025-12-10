@@ -111,6 +111,32 @@ export class IframeContent {
     return panelTop >= inputBottom;
   }
 
+  /** 定型文タブをアクティブにする */
+  public activeTemplatesTab(): void {
+    this.activateTab('#templates-tab');
+  }
+
+  /** ツールタブをアクティブにする */
+  public activeToolsTab(): void {
+    this.activateTab('#tools-tab');
+  }
+
+  /** 任意のタブをアクティブにする（iframeDoc が null の間は自動リトライ） */
+  private activateTab(tabId: string): void {
+    const interval = setInterval(() => {
+      if (!this.iframeDoc) {
+        // iframe がまだ読み込まれていない
+        return;
+      }
+
+      const tab = this.iframeDoc.querySelector<HTMLElement>(tabId);
+      if (tab) {
+        tab.click();
+        clearInterval(interval);
+      }
+    }, 100);
+  }
+
   private addEventListeners(): void {
     if (!this.iframeDoc) return;
 

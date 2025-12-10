@@ -48,9 +48,15 @@ class ContentScript {
   /** 選択範囲が変更されたときの処理 */
   private handleSelectionChange(targetElement: HTMLElement) {
     const text = getInputElementText(targetElement);
+    const selection = window.getSelection();
 
     if (text.length > 0) {
       if (text.startsWith("/")) {
+        this.inputPanel.getIframe().activeTemplatesTab();
+        this.inputPanel.show(targetElement);
+      } else if (selection && selection.toString().length > 0) {
+        //input要素内でテキストが選択されたとき
+        this.inputPanel.getIframe().activeToolsTab();
         this.inputPanel.show(targetElement);
       } else {
         this.inputPanel.hide();

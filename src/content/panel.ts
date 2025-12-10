@@ -21,6 +21,11 @@ export class InputPanel {
     return this.isClickingPanel;
   }
 
+  /** iframeContent インスタンスを取得 */
+  public getIframe(): IframeContent {
+    return this.iframeContent;
+  }
+
   /** パネルを表示 */
   public async show(input: HTMLElement): Promise<void> {
     this.input = input;
