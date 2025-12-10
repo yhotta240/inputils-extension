@@ -50,8 +50,7 @@ function handleToolClick(item: HTMLElement, getSelectedText: () => string): void
     .catch((error) => {
       console.error("AI生成エラー:", error);
       // エラーメッセージを表示
-      const errorMessage = error instanceof Error ? error.message : 'AI生成に失敗しました';
-      alert(errorMessage);
+      alert('申し訳ございません。処理中にエラーが発生しました。もう一度お試しください。');
     })
     .finally(() => {
       // 要素を再度有効化
