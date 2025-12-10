@@ -84,6 +84,13 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link p-0 text-white-50" id="tools-tab" data-bs-toggle="tab" data-bs-target="#tools"
+              type="button" role="tab" aria-controls="tools" aria-selected="false" style="width: 25px; height: 25px;"
+              title="ツール">
+              <i class="bi bi-tools" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link p-0 text-white-50" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
               type="button" role="tab" aria-controls="history" aria-selected="false" style="width: 25px; height: 25px;"
               title="履歴">
@@ -148,6 +155,22 @@
           </div>
           <button id="templates-right-arrow" type="button" class="btn p-0 btn-arrow">
             <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ツールタブ -->
+      <div class="tab-pane fade" id="tools">
+        <!-- ツールボタン群 -->
+        <div class="d-flex gap-1">
+          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="proofread">
+            <i class="bi bi-file-text me-2"></i><small class="text-custom d-block">添削</small>
+          </button>
+          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="translate">
+            <i class="bi bi-translate me-2"></i><small class="text-custom d-block">翻訳</small>
+          </button>
+          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="keigo">
+            <i class="bi bi-person-badge me-2"></i><small class="text-custom d-block">敬語</small>
           </button>
         </div>
       </div>

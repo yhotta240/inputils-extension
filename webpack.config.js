@@ -2,6 +2,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtensionReloader = require("./scripts/ext-reloader");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -66,6 +67,7 @@ module.exports = {
     plugins.push(new MiniCssExtractPlugin({
       filename: '[name].css',
     }));
+    if (isDev) plugins.push(new Dotenv());
     return plugins;
   })(),
   performance: {

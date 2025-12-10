@@ -251,3 +251,18 @@ function backspaceTextForContentEditable(targetChar: string = '/'): void {
   });
   foundNode.parentElement?.dispatchEvent(ev);
 }
+
+/** 選択範囲を削除 */
+export function deleteSelectedText(): boolean {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return false;
+
+  try {
+    const range = selection.getRangeAt(0);
+    range.deleteContents();
+    return true;
+  } catch (error) {
+    console.log('選択範囲の削除に失敗:', error);
+    return false;
+  }
+}

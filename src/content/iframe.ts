@@ -1,3 +1,5 @@
+import { setupToolItemListeners } from "./tools";
+
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
 
 export class IframeContent {
@@ -7,6 +9,8 @@ export class IframeContent {
   private expandedHeight: number = 0; // 展開時の実際の高さ
   private isCollapsed: boolean = false; // 折りたたみ状態
   private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
+  private selectedText: string = '';
+  private listenersInitialized: boolean = false;
 
   constructor() { }
 
@@ -111,13 +115,47 @@ export class IframeContent {
     return panelTop >= inputBottom;
   }
 
+  /** 選択されたテキストを設定 */
+  public setSelectedText(text: string): void {
+    this.selectedText = text;
+  }
+
+  /** 定型文タブをアクティブにする */
+  public activeTemplatesTab(): void {
+    this.activateTab('#templates-tab');
+  }
+
+  /** ツールタブをアクティブにする */
+  public activeToolsTab(): void {
+    this.activateTab('#tools-tab');
+  }
+
+  /** 任意のタブをアクティブにする（iframeDoc が null の間は自動リトライ） */
+  private activateTab(tabId: string): void {
+    const interval = setInterval(() => {
+      if (!this.iframeDoc) {
+        // iframe がまだ読み込まれていない
+        return;
+      }
+
+      const tab = this.iframeDoc.querySelector<HTMLElement>(tabId);
+      if (tab) {
+        tab.click();
+        clearInterval(interval);
+      }
+    }, 100);
+  }
+
   private addEventListeners(): void {
-    if (!this.iframeDoc) return;
+    if (!this.iframeDoc || this.listenersInitialized) return;
 
     this.setupTemplateItemListeners();
+    setupToolItemListeners(this.iframeDoc, () => this.selectedText);
     this.setupMouseEventListeners();
     this.setupPanelControlListeners();
     this.setupArrowScrollListeners();
+    
+    this.listenersInitialized = true;
   }
 
   /** 定型文アイテムのクリックイベントを設定 */
