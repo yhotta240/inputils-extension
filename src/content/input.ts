@@ -90,10 +90,22 @@ export function getContentEditableParent(element: HTMLElement): HTMLElement | nu
  * @param text 挿入するテキスト
  */
 export function insertText(curInput: HTMLElement, text: string): void {
+  const commandChar = '/';
   if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
-    insertTextForInput(curInput, text);
+    insertTextForInput(curInput, text, commandChar);
   } else if (curInput.isContentEditable) {
-    inputTextForContentEditable(curInput, text);
+    inputTextForContentEditable(curInput, text, commandChar);
+  }
+}
+
+/** 指定された入力要素に絵文字を挿入する */
+export function insertEmoji(curInput: HTMLElement, emoji: string): void {
+  const commandChar = ':';
+
+  if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
+    insertTextForInput(curInput, emoji, commandChar);
+  } else if (curInput.isContentEditable) {
+    inputTextForContentEditable(curInput, emoji, commandChar);
   }
 }
 
@@ -119,14 +131,14 @@ function pasteClipboardData(element: HTMLElement, text: string): void {
 }
 
 /** `input` と `textarea` にテキストを挿入 */
-function insertTextForInput(curInput: HTMLInputElement | HTMLTextAreaElement, text: string): void {
+function insertTextForInput(curInput: HTMLInputElement | HTMLTextAreaElement, text: string, commandChar: string): void {
   const start = curInput.selectionStart || 0;
   const end = curInput.selectionEnd || 0;
   const currentValue = curInput.value;
 
   // 「/」で始まる場合は「/」を削除してから挿入
   const beforeCursor = currentValue.substring(0, start);
-  const lastSlashIndex = beforeCursor.lastIndexOf('/');
+  const lastSlashIndex = beforeCursor.lastIndexOf(commandChar);
   const newStart = lastSlashIndex >= 0 ? lastSlashIndex : start;
 
   const newValue = currentValue.substring(0, newStart) + text + currentValue.substring(end);
@@ -142,12 +154,13 @@ function insertTextForInput(curInput: HTMLInputElement | HTMLTextAreaElement, te
 }
 
 /** contentEditable 要素にテキストを挿入 */
-function inputTextForContentEditable(curInput: HTMLElement, text: string): void {
+function inputTextForContentEditable(curInput: HTMLElement, text: string, commandChar: string): void {
   curInput.focus();
   const selection = window.getSelection();
+
   if (!selection || selection.rangeCount === 0) {
     // Selection が存在しない場合は，カーソル位置を最後に設定してから処理
-    backspaceTextForContentEditable();
+    backspaceTextForContentEditable(commandChar);
     // クリップボード経由で貼り付け
     pasteClipboardData(curInput, text);
     return;
@@ -160,7 +173,7 @@ function inputTextForContentEditable(curInput: HTMLElement, text: string): void 
 
     // カーソル位置より前のテキストを取得して "/" を探す
     const textToSearch = startContainer.textContent?.substring(0, cursorOffset) || '';
-    const slashIndex = textToSearch.lastIndexOf('/');
+    const slashIndex = textToSearch.lastIndexOf(commandChar);
 
     if (slashIndex >= 0 && 'deleteData' in startContainer) {
       // "/" が見つかり，deleteDataメソッドが使える場合（Textノード）
@@ -202,7 +215,7 @@ function inputTextForContentEditable(curInput: HTMLElement, text: string): void 
 }
 
 /** contentEditable 要素から直前の文字を削除 */
-function backspaceTextForContentEditable(targetChar: string = '/'): void {
+function backspaceTextForContentEditable(targetChar: string): void {
   // 編集 root の取得
   const root = document.querySelector<HTMLElement>(
     '[contenteditable="true"]:not([data-content-editable-leaf])'
