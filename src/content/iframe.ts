@@ -1,3 +1,4 @@
+import { setupTemplateItemListeners } from "./templates";
 import { setupToolItemListeners } from "./tools";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
@@ -125,6 +126,65 @@ export class IframeContent {
     this.activateTab('#templates-tab');
   }
 
+  /** 定型文を検索してフィルタリング */
+  public filterTemplates(query: string): void {
+    const matchedItems = this.performTemplateFiltering(query);
+    
+    // クエリが空でない場合、マッチ位置でソート
+    if (query !== '' && matchedItems.length > 0) {
+      this.sortTemplatesByMatchPosition(matchedItems);
+    }
+  }
+
+  /** フィルタリング処理を実行してマッチ情報を返す */
+  private performTemplateFiltering(query: string): Array<{ element: HTMLElement; startIndex: number }> {
+    if (!this.iframeDoc) return [];
+
+    const templateItems = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item');
+    const lowerQuery = query.toLowerCase();
+    const matchedItems: Array<{ element: HTMLElement; startIndex: number }> = [];
+
+    templateItems.forEach(item => {
+      const text = item.getAttribute('data-text') || '';
+      const displayText = item.textContent || '';
+      const lowerText = text.toLowerCase();
+      const lowerDisplayText = displayText.toLowerCase();
+
+      // data-text属性または表示テキストに検索文字列が含まれるかチェック
+      const textIndex = lowerText.indexOf(lowerQuery);
+      const displayIndex = lowerDisplayText.indexOf(lowerQuery);
+      const matches = textIndex !== -1 || displayIndex !== -1;
+
+      if (query === '' || matches) {
+        item.style.display = '';
+        // マッチ位置を記録（先頭に近いほど優先度が高い）
+        const startIndex = textIndex !== -1 ? textIndex : displayIndex;
+        matchedItems.push({ element: item, startIndex });
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    return matchedItems;
+  }
+
+  /** マッチ位置に基づいて定型文を並び替え */
+  private sortTemplatesByMatchPosition(items: Array<{ element: HTMLElement; startIndex: number }>): void {
+    if (!this.iframeDoc || items.length === 0) return;
+
+    // 先頭に近い順にソート
+    items.sort((a, b) => a.startIndex - b.startIndex);
+
+    // 親要素を取得
+    const container = items[0].element.parentElement;
+    if (!container) return;
+
+    // ソート順に再配置
+    items.forEach(item => {
+      container.appendChild(item.element);
+    });
+  }
+
   /** ツールタブをアクティブにする */
   public activeToolsTab(): void {
     this.activateTab('#tools-tab');
@@ -149,25 +209,13 @@ export class IframeContent {
   private addEventListeners(): void {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
-    this.setupTemplateItemListeners();
+    setupTemplateItemListeners(this.iframeDoc);
     setupToolItemListeners(this.iframeDoc, () => this.selectedText);
     this.setupMouseEventListeners();
     this.setupPanelControlListeners();
     this.setupArrowScrollListeners();
-    
+
     this.listenersInitialized = true;
-  }
-
-  /** 定型文アイテムのクリックイベントを設定 */
-  private setupTemplateItemListeners(): void {
-    const templateItems = this.iframeDoc!.querySelectorAll<HTMLElement>('.template-item');
-
-    templateItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const text = item.getAttribute('data-text') || '';
-        window.parent.postMessage({ type: 'insertText', text: text }, '*');
-      });
-    });
   }
 
   /** マウスイベントのリスナーを設定 */

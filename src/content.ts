@@ -3,10 +3,12 @@ import { getContentEditableParent, getFocusedEditableElement, getInputElement, g
 
 class ContentScript {
   private inputPanel: InputPanel;
+  private lastProcessedText: string = '';
 
   constructor() {
     this.inputPanel = new InputPanel();
 
+    // 選択範囲の変更を検知
     document.addEventListener("selectionchange", () => {
       if (isInputElement(document.activeElement as HTMLElement)) {
         this.setInputElement(document.activeElement);
@@ -14,6 +16,13 @@ class ContentScript {
         this.inputPanel.hide(); // 入力要素でなければパネルを非表示
       }
     });
+
+    // 入力内容の変更を検知（文字削除・追加時）
+    document.addEventListener("input", (e) => {
+      if (e.target && isInputElement(e.target as HTMLElement)) {
+        this.setInputElement(e.target);
+      }
+    }, true); // キャプチャフェーズで検知
   }
 
   /** 初期化処理 */
@@ -50,9 +59,19 @@ class ContentScript {
     const text = getInputElementText(targetElement);
     const selection = window.getSelection();
 
+    // 重複発火防止
+    if (text === this.lastProcessedText) {
+      this.lastProcessedText = "";
+      return;
+    }
+    this.lastProcessedText = text;
+
     if (text.length > 0) {
       if (text.startsWith("/")) {
+        // テンプレートコマンドが入力されたとき
+        const searchQuery = text.substring(1); // "/"以降の文字列を取得
         this.inputPanel.getIframe().activeTemplatesTab();
+        this.inputPanel.getIframe().filterTemplates(searchQuery);
         this.inputPanel.show(targetElement);
       } else if (selection && selection.toString().length > 0) {
         //input要素内でテキストが選択されたとき
