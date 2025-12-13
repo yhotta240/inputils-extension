@@ -9,7 +9,7 @@ export class IframeContent {
   private panel: HTMLDivElement | null = null;
   private preIframeHeight: number = 0;
   private expandedHeight: number = 0; // 展開時の実際の高さ
-  private isCollapsed: boolean = false; // 折りたたみ状態
+  private isExpanded: boolean = false; // 展開状態
   private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
   private selectedText: string = '';
   private listenersInitialized: boolean = false;
@@ -106,8 +106,8 @@ export class IframeContent {
   }
 
   /** パネルが折りたたみ状態かどうかを返す */
-  public isCollapsedState(): boolean {
-    return this.isCollapsed;
+  public isExpandedState(): boolean {
+    return this.isExpanded;
   }
 
   /** パネルが入力欄の下にあるかどうかを判定 */
@@ -320,7 +320,7 @@ export class IframeContent {
     this.panel!.style.top = `${top}px`;
     this.expandedHeight = height;
     this.wasBelowInput = isBelowInput;
-    this.isCollapsed = false;
+    this.isExpanded = true;
   }
 
   /** パネルを折りたたみ */
@@ -336,7 +336,7 @@ export class IframeContent {
     this.preIframeHeight = 0;
     this.expandedHeight = 0;
     this.wasBelowInput = false;
-    this.isCollapsed = true;
+    this.isExpanded = false;
   }
 
   /** 矢印ボタンのスクロールイベントを設定 */
@@ -392,13 +392,22 @@ export class IframeContent {
   /** iframe の高さをコンテンツに合わせて調整するリスナーを設定 */
   private resizeIframeHeightListeners(): void {
     const navItems = this.iframeDoc!.querySelectorAll<HTMLElement>('.nav-item');
+
     navItems.forEach(item => {
       item.addEventListener('click', () => {
+        if (this.isExpanded) return;
+
         setTimeout(() => {
-          if (!this.iframeDoc) return;
-          const iframe = this.iframeDoc.defaultView!.frameElement as HTMLIFrameElement;
-          const height = this.iframeDoc.body.scrollHeight;
-          iframe.style.height = `${Math.min(height, 85)}px`;
+          const doc = this.iframeDoc;
+          if (!doc) return;
+
+          const iframe = doc.defaultView?.frameElement as HTMLIFrameElement | null;
+          if (!iframe) return;
+
+          const maxHeight = 85;
+          const height = doc.body.scrollHeight;
+
+          iframe.style.height = `${Math.min(height, maxHeight)}px`;
         }, 100);
       });
     });
