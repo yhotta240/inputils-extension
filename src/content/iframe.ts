@@ -1,3 +1,4 @@
+import { setupEmojiItemListeners } from "./emojis";
 import { setupTemplateItemListeners } from "./templates";
 import { setupToolItemListeners } from "./tools";
 
@@ -8,7 +9,7 @@ export class IframeContent {
   private panel: HTMLDivElement | null = null;
   private preIframeHeight: number = 0;
   private expandedHeight: number = 0; // 展開時の実際の高さ
-  private isCollapsed: boolean = false; // 折りたたみ状態
+  private isExpanded: boolean = false; // 展開状態
   private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
   private selectedText: string = '';
   private listenersInitialized: boolean = false;
@@ -105,8 +106,8 @@ export class IframeContent {
   }
 
   /** パネルが折りたたみ状態かどうかを返す */
-  public isCollapsedState(): boolean {
-    return this.isCollapsed;
+  public isExpandedState(): boolean {
+    return this.isExpanded;
   }
 
   /** パネルが入力欄の下にあるかどうかを判定 */
@@ -129,7 +130,7 @@ export class IframeContent {
   /** 定型文を検索してフィルタリング */
   public filterTemplates(query: string): void {
     const matchedItems = this.performTemplateFiltering(query);
-    
+
     // クエリが空でない場合、マッチ位置でソート
     if (query !== '' && matchedItems.length > 0) {
       this.sortTemplatesByMatchPosition(matchedItems);
@@ -190,6 +191,11 @@ export class IframeContent {
     this.activateTab('#tools-tab');
   }
 
+  /** 絵文字タブをアクティブにする */
+  public activeEmojisTab(): void {
+    this.activateTab('#emojis-tab');
+  }
+
   /** 任意のタブをアクティブにする（iframeDoc が null の間は自動リトライ） */
   private activateTab(tabId: string): void {
     const interval = setInterval(() => {
@@ -201,6 +207,9 @@ export class IframeContent {
       const tab = this.iframeDoc.querySelector<HTMLElement>(tabId);
       if (tab) {
         tab.click();
+        // タブクリック後、コンテナの表示/非表示を更新
+        const dataBsTarget = tab.getAttribute('data-bs-target');
+        this.updateContainerVisibility(dataBsTarget || '');
         clearInterval(interval);
       }
     }, 100);
@@ -211,9 +220,12 @@ export class IframeContent {
 
     setupTemplateItemListeners(this.iframeDoc);
     setupToolItemListeners(this.iframeDoc, () => this.selectedText);
+    setupEmojiItemListeners(this.iframeDoc);
     this.setupMouseEventListeners();
     this.setupPanelControlListeners();
     this.setupArrowScrollListeners();
+    this.resizeIframeHeightListeners();
+    this.setupNameContainerListener();
 
     this.listenersInitialized = true;
   }
@@ -308,7 +320,7 @@ export class IframeContent {
     this.panel!.style.top = `${top}px`;
     this.expandedHeight = height;
     this.wasBelowInput = isBelowInput;
-    this.isCollapsed = false;
+    this.isExpanded = true;
   }
 
   /** パネルを折りたたみ */
@@ -324,7 +336,7 @@ export class IframeContent {
     this.preIframeHeight = 0;
     this.expandedHeight = 0;
     this.wasBelowInput = false;
-    this.isCollapsed = true;
+    this.isExpanded = false;
   }
 
   /** 矢印ボタンのスクロールイベントを設定 */
@@ -375,5 +387,55 @@ export class IframeContent {
 
     // デフォルトはコンテナ幅の80%
     return containerWidth * 0.8;
+  }
+
+  /** iframe の高さをコンテンツに合わせて調整するリスナーを設定 */
+  private resizeIframeHeightListeners(): void {
+    const navItems = this.iframeDoc!.querySelectorAll<HTMLElement>('.nav-item');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (this.isExpanded) return;
+
+        setTimeout(() => {
+          const doc = this.iframeDoc;
+          if (!doc) return;
+
+          const iframe = doc.defaultView?.frameElement as HTMLIFrameElement | null;
+          if (!iframe) return;
+
+          const maxHeight = 85;
+          const height = doc.body.scrollHeight;
+
+          iframe.style.height = `${Math.min(height, maxHeight)}px`;
+        }, 100);
+      });
+    });
+  }
+
+  /** セット名選択コンテナのリスナーを設定 */
+  private setupNameContainerListener(): void {
+    const navItems = this.iframeDoc!.querySelectorAll<HTMLElement>('.nav-item');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const button = (e.target as HTMLElement).closest('button');
+        if (!button || !this.iframeDoc) return;
+
+        const dataBsTarget = button.getAttribute('data-bs-target');
+        this.updateContainerVisibility(dataBsTarget || '');
+      });
+    });
+  }
+
+  /** タブIDに応じてコンテナの表示/非表示を更新 */
+  private updateContainerVisibility(dataBsTarget: string): void {
+    // すべてのコンテナを非表示にする
+    this.iframeDoc!.querySelectorAll<HTMLElement>('[id$="-name-container"]').forEach(el => el.classList.add('d-none'));
+
+    // 対応するコンテナを表示する（#を除いたIDに-name-containerを追加）
+    if (dataBsTarget) {
+      this.iframeDoc!.querySelector<HTMLElement>(`${dataBsTarget}-name-container`)?.classList.remove('d-none');
+    }
   }
 }

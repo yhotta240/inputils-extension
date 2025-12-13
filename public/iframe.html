@@ -67,12 +67,22 @@
 <body>
   <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center sticky-top bg-custom-dark">
-      <select id="select-set-name" class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white"
-        style="width: 35%;" aria-label="select example">
-        <option value="1" class="bg-custom-dark text-white">One</option>
-        <option value="2" class="bg-custom-dark text-white">Two</option>
-        <option value="3" class="bg-custom-dark text-white">Three</option>
-      </select>
+      <div id="name-container" style="width: 35%;">
+        <!-- 定型文の選択 -->
+        <select id="templates-name-container"
+          class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white"
+          aria-label="select example">
+          <option value="1" class="bg-custom-dark text-white">One</option>
+          <option value="2" class="bg-custom-dark text-white">Two</option>
+          <option value="3" class="bg-custom-dark text-white">Three</option>
+        </select>
+
+        <!-- 絵文字の名前 -->
+        <div class="" id="emojis-name-container">
+          <div id="emoji-name" class="text-custom d-none fs-6 ps-3">絵文字名</div>
+        </div>
+      </div>
+
       <div class="d-flex gap-1 me-2">
         <!-- タブナビゲーション -->
         <ul class="nav nav-underline gap-1" id="tabs" role="tablist">
@@ -88,6 +98,13 @@
               type="button" role="tab" aria-controls="tools" aria-selected="false" style="width: 25px; height: 25px;"
               title="ツール">
               <i class="bi bi-tools" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link p-0 text-white-50" id="emojis-tab" data-bs-toggle="tab" data-bs-target="#emojis"
+              type="button" role="tab" aria-controls="emojis" aria-selected="false" style="width: 25px; height: 25px;"
+              title="絵文字">
+              <i class="bi bi-emoji-smile" style="font-size: 16px; line-height: 1;"></i>
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -171,6 +188,27 @@
           </button>
           <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="keigo">
             <i class="bi bi-person-badge me-2"></i><small class="text-custom d-block">敬語</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- 絵文字タブ -->
+      <div class="tab-pane fade pb-2 px-2" id="emojis">
+        <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😀" title="スマイル">
+            <span class="text-custom d-block">😀</span>
+          </button>
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😂" title="笑い">
+            <span class="text-custom d-block">😂</span>
+          </button>
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😍" title="ハート目">
+            <span class="text-custom d-block">😍</span>
+          </button>
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="👍" title="いいね">
+            <span class="text-custom d-block">👍</span>
+          </button>
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="🙏" title="お願い">
+            <span class="text-custom d-block">🙏</span>
           </button>
         </div>
       </div>
