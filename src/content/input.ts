@@ -109,6 +109,18 @@ export function insertEmoji(curInput: HTMLElement, emoji: string): void {
   }
 }
 
+/** 指定された入力要素にユーザ名を挿入する */
+export function insertUser(curInput: HTMLElement, user: string): void {
+  const commandChar = '@';
+
+  if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
+    insertTextForInput(curInput, user, commandChar);
+  } else if (curInput.isContentEditable) {
+    inputTextForContentEditable(curInput, user, commandChar);
+  }
+}
+
+
 /** input イベントをラップして発火させ，テキストを挿入する */
 function pasteInputEventWrapper(element: HTMLElement, text: string): void {
   element.dispatchEvent(new InputEvent('input', {

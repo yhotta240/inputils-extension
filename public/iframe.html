@@ -108,6 +108,13 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link p-0 text-white-50" id="users-tab" data-bs-toggle="tab" data-bs-target="#users"
+              type="button" role="tab" aria-controls="users" aria-selected="false" style="width: 25px; height: 25px;"
+              title="ユーザ">
+              <i class="bi bi-people" style="font-size: 16px; line-height: 1;"></i>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link p-0 text-white-50" id="history-tab" data-bs-toggle="tab" data-bs-target="#history"
               type="button" role="tab" aria-controls="history" aria-selected="false" style="width: 25px; height: 25px;"
               title="履歴">
@@ -214,6 +221,20 @@
           <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="🙏"
             title="お願い - pray" data-text="お願い" data-text-en="pray">
             <span class="text-custom d-block">🙏</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ユーザタブ -->
+      <div class="tab-pane fade pb-2 px-2" id="users">
+        <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ1" title="ユーザ1"
+            data-text="ユーザ1">
+            <span class="text-custom d-block">ユーザ1</span>
+          </button>
+          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ2" title="ユーザ2"
+            data-text="ユーザ2">
+            <span class="text-custom d-block">ユーザ2</span>
           </button>
         </div>
       </div>

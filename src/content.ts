@@ -59,6 +59,15 @@ class ContentScript {
     const text = getInputElementText(targetElement);
     const selection = window.getSelection();
 
+    const getQuery = (commandChar: string) => {
+      if (text.startsWith(commandChar)) {
+        return text.substring(1);
+      } else {
+        const lastColonIndex = text.lastIndexOf(commandChar);
+        return text.substring(lastColonIndex + 1);
+      }
+    };
+
     // 重複発火防止
     if (text === this.lastProcessedText) {
       this.lastProcessedText = "";
@@ -81,16 +90,13 @@ class ContentScript {
         this.inputPanel.getIframe().setSelectedText(selectedText);
       } else if (text.startsWith(':') || text.includes(':')) {
         // 絵文字コマンドが入力されたとき
-        const emojiQuery = () => {
-          if (text.startsWith(':')) {
-            return text.substring(1);
-          } else {
-            const lastColonIndex = text.lastIndexOf(':');
-            return text.substring(lastColonIndex + 1);
-          }
-        };
         this.inputPanel.getIframe().activeEmojisTab();
-        this.inputPanel.getIframe().filterEmojis(emojiQuery());
+        this.inputPanel.getIframe().filterEmojis(getQuery(':'));
+        this.inputPanel.show(targetElement);
+      } else if (text.startsWith('@') || text.includes('@')) {
+        // ユーザコマンドが入力されたとき
+        this.inputPanel.getIframe().activeUsersTab();
+        this.inputPanel.getIframe().filterUsers(getQuery('@'));
         this.inputPanel.show(targetElement);
       } else {
         this.inputPanel.hide();
