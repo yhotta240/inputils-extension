@@ -11,15 +11,15 @@ export function performFiltering(
   const matchedItems: Array<{ element: HTMLElement; startIndex: number }> = [];
 
   items.forEach(item => {
-    const text = item.getAttribute('data-text') || item.getAttribute('data-emoji') || '';
+    const text = item.getAttribute('data-text-en') || '';
+    const enText = item.getAttribute('data-text') || '';
     const displayText = item.textContent || '';
-    const lowerText = text.toLowerCase();
-    const lowerDisplayText = displayText.toLowerCase();
 
-    // data-text/data-emoji属性または表示テキストに検索文字列が含まれるかチェック
-    const textIndex = lowerText.indexOf(lowerQuery);
-    const displayIndex = lowerDisplayText.indexOf(lowerQuery);
-    const matches = textIndex !== -1 || displayIndex !== -1;
+    // data-text/data-text-en属性または表示テキストに検索文字列が含まれるかチェック
+    const textIndex = text.toLowerCase().indexOf(lowerQuery);
+    const enTextIndex = enText.toLowerCase().indexOf(lowerQuery);
+    const displayIndex = displayText.toLowerCase().indexOf(lowerQuery);
+    const matches = textIndex !== -1 || enTextIndex !== -1 || displayIndex !== -1;
 
     if (query === '' || matches) {
       item.style.display = '';

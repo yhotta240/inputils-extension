@@ -79,11 +79,18 @@ class ContentScript {
         this.inputPanel.getIframe().activeToolsTab();
         this.inputPanel.show(targetElement);
         this.inputPanel.getIframe().setSelectedText(selectedText);
-      } else if (text.startsWith(':') || text.endsWith(':')) {
+      } else if (text.startsWith(':') || text.includes(':')) {
         // 絵文字コマンドが入力されたとき
-        const emojiQuery = text.substring(1); // ":"以降の文字列を取得
+        const emojiQuery = () => {
+          if (text.startsWith(':')) {
+            return text.substring(1);
+          } else {
+            const lastColonIndex = text.lastIndexOf(':');
+            return text.substring(lastColonIndex + 1);
+          }
+        };
         this.inputPanel.getIframe().activeEmojisTab();
-        this.inputPanel.getIframe().filterEmojis(emojiQuery);
+        this.inputPanel.getIframe().filterEmojis(emojiQuery());
         this.inputPanel.show(targetElement);
       } else {
         this.inputPanel.hide();
