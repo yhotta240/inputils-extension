@@ -1,6 +1,7 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./emojis";
 import { filterTemplateItems, setupTemplateItemListeners } from "./templates";
 import { setupToolItemListeners } from "./tools";
+import { filterUserItems, setupUserItemListeners } from "./users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
 
@@ -127,16 +128,6 @@ export class IframeContent {
     this.activateTab('#templates-tab');
   }
 
-  /** 定型文を検索してフィルタリング */
-  public filterTemplates(query: string): void {
-    filterTemplateItems(this.iframeDoc!, query);
-  }
-
-  /** 絵文字を検索してフィルタリング */
-  public filterEmojis(query: string): void {
-    filterEmojiItems(this.iframeDoc!, query);
-  }
-
   /** ツールタブをアクティブにする */
   public activeToolsTab(): void {
     this.activateTab('#tools-tab');
@@ -145,6 +136,11 @@ export class IframeContent {
   /** 絵文字タブをアクティブにする */
   public activeEmojisTab(): void {
     this.activateTab('#emojis-tab');
+  }
+
+  /** ユーザタブをアクティブにする */
+  public activeUsersTab(): void {
+    this.activateTab('#users-tab');
   }
 
   /** 任意のタブをアクティブにする（iframeDoc が null の間は自動リトライ） */
@@ -166,12 +162,29 @@ export class IframeContent {
     }, 100);
   }
 
+  /** 定型文を検索してフィルタリング */
+  public filterTemplates(query: string): void {
+    filterTemplateItems(this.iframeDoc!, query);
+  }
+
+  /** 絵文字を検索してフィルタリング */
+  public filterEmojis(query: string): void {
+    filterEmojiItems(this.iframeDoc!, query);
+  }
+
+  /** ユーザを検索してフィルタリング */
+  public filterUsers(query: string): void {
+    // 遅延実行で iframeDoc の準備を待つ
+    filterUserItems(this.iframeDoc!, query);
+  }
+
   private addEventListeners(): void {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
     setupTemplateItemListeners(this.iframeDoc);
     setupToolItemListeners(this.iframeDoc, () => this.selectedText);
     setupEmojiItemListeners(this.iframeDoc);
+    setupUserItemListeners(this.iframeDoc);
     this.setupMouseEventListeners();
     this.setupPanelControlListeners();
     this.setupArrowScrollListeners();
