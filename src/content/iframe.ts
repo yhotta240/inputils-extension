@@ -1,5 +1,5 @@
-import { setupEmojiItemListeners } from "./emojis";
-import { setupTemplateItemListeners } from "./templates";
+import { filterEmojiItems, setupEmojiItemListeners } from "./emojis";
+import { filterTemplateItems, setupTemplateItemListeners } from "./templates";
 import { setupToolItemListeners } from "./tools";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
@@ -129,61 +129,12 @@ export class IframeContent {
 
   /** 定型文を検索してフィルタリング */
   public filterTemplates(query: string): void {
-    const matchedItems = this.performTemplateFiltering(query);
-
-    // クエリが空でない場合、マッチ位置でソート
-    if (query !== '' && matchedItems.length > 0) {
-      this.sortTemplatesByMatchPosition(matchedItems);
-    }
+    filterTemplateItems(this.iframeDoc!, query);
   }
 
-  /** フィルタリング処理を実行してマッチ情報を返す */
-  private performTemplateFiltering(query: string): Array<{ element: HTMLElement; startIndex: number }> {
-    if (!this.iframeDoc) return [];
-
-    const templateItems = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item');
-    const lowerQuery = query.toLowerCase();
-    const matchedItems: Array<{ element: HTMLElement; startIndex: number }> = [];
-
-    templateItems.forEach(item => {
-      const text = item.getAttribute('data-text') || '';
-      const displayText = item.textContent || '';
-      const lowerText = text.toLowerCase();
-      const lowerDisplayText = displayText.toLowerCase();
-
-      // data-text属性または表示テキストに検索文字列が含まれるかチェック
-      const textIndex = lowerText.indexOf(lowerQuery);
-      const displayIndex = lowerDisplayText.indexOf(lowerQuery);
-      const matches = textIndex !== -1 || displayIndex !== -1;
-
-      if (query === '' || matches) {
-        item.style.display = '';
-        // マッチ位置を記録（先頭に近いほど優先度が高い）
-        const startIndex = textIndex !== -1 ? textIndex : displayIndex;
-        matchedItems.push({ element: item, startIndex });
-      } else {
-        item.style.display = 'none';
-      }
-    });
-
-    return matchedItems;
-  }
-
-  /** マッチ位置に基づいて定型文を並び替え */
-  private sortTemplatesByMatchPosition(items: Array<{ element: HTMLElement; startIndex: number }>): void {
-    if (!this.iframeDoc || items.length === 0) return;
-
-    // 先頭に近い順にソート
-    items.sort((a, b) => a.startIndex - b.startIndex);
-
-    // 親要素を取得
-    const container = items[0].element.parentElement;
-    if (!container) return;
-
-    // ソート順に再配置
-    items.forEach(item => {
-      container.appendChild(item.element);
-    });
+  /** 絵文字を検索してフィルタリング */
+  public filterEmojis(query: string): void {
+    filterEmojiItems(this.iframeDoc!, query);
   }
 
   /** ツールタブをアクティブにする */
