@@ -83,7 +83,7 @@ class ContentScript {
         // 絵文字コマンドが入力されたとき
         const emojiQuery = text.substring(1); // ":"以降の文字列を取得
         this.inputPanel.getIframe().activeEmojisTab();
-        // this.inputPanel.getIframe().filterEmojis(emojiQuery);
+        this.inputPanel.getIframe().filterEmojis(emojiQuery);
         this.inputPanel.show(targetElement);
       } else {
         this.inputPanel.hide();
