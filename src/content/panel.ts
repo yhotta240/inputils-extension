@@ -59,45 +59,16 @@ export class InputPanel {
   private updatePosition(input: HTMLElement): void {
     if (!this.panel) return;
 
-    // パネルの高さを取得（0 の場合はデフォルト値）
-    const panelHeight = this.panel.offsetHeight > 0 ? this.panel.offsetHeight : DEFAULT_PANEL_HEIGHT;
-
     const inputRect = input.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
     const viewportWidth = window.innerWidth;
 
     // left が画面外に出ないように調整
     const left = Math.min(inputRect.left, viewportWidth - Math.min(inputRect.width, 600) - 5);
 
-    // 入力欄の上下のスペースを計算
-    const spaceAbove = inputRect.top;
-    const spaceBelow = viewportHeight - inputRect.bottom;
-
-    let calculatedTop = 0;
-    let shouldPlaceAbove = false;
-
-    // パネルの上下配置判定
-    if (spaceAbove >= panelHeight + TOP_MARGIN) {
-      // 上に配置
-      calculatedTop = inputRect.top - panelHeight - TOP_MARGIN;
-      shouldPlaceAbove = true;
-    } else if (spaceBelow >= panelHeight + BOTTOM_MARGIN) {
-      // 下に配置
-      calculatedTop = inputRect.bottom + BOTTOM_MARGIN;
-      shouldPlaceAbove = false;
-    } else {
-      // どちらにも収まらない場合は広い方に配置
-      if (spaceAbove > spaceBelow) {
-        calculatedTop = TOP_MARGIN;
-        shouldPlaceAbove = true;
-      } else {
-        calculatedTop = inputRect.bottom + BOTTOM_MARGIN;
-        shouldPlaceAbove = false;
-      }
-    }
+    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
 
     // 最終位置の適用
-    this.panel.style.top = `${calculatedTop}px`;
+    this.panel.style.top = `${top}px`;
     this.panel.style.left = `${left}px`;
     this.panel.style.width = `${Math.min(inputRect.width, 600)}px`;
     this.panel.style.backgroundColor = '#18181b';
@@ -107,27 +78,8 @@ export class InputPanel {
     const panel = document.createElement('div');
     panel.id = 'inputils-floating-panel';
     const inputRect = input.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
 
-    // 初期パネル高さを仮定（iframe の初期高さ + padding）
-    const estimatedPanelHeight = DEFAULT_PANEL_HEIGHT;
-    const spaceAbove = inputRect.top;
-    const spaceBelow = viewportHeight - inputRect.bottom;
-
-    // 上下どちらに配置するか判断
-    let top = 0;
-    if (spaceAbove >= estimatedPanelHeight + TOP_MARGIN) {
-      // 上に配置
-      top = inputRect.top - estimatedPanelHeight - TOP_MARGIN;
-    } else if (spaceBelow >= estimatedPanelHeight + BOTTOM_MARGIN) {
-      // 下に配置
-      top = inputRect.bottom + BOTTOM_MARGIN;
-    } else {
-      // 広い方に配置
-      top = spaceAbove > spaceBelow
-        ? TOP_MARGIN
-        : inputRect.bottom + BOTTOM_MARGIN;
-    }
+    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
 
     // スタイル設定
     Object.assign(panel.style, {
@@ -135,7 +87,7 @@ export class InputPanel {
       top: `${top}px`,
       left: `${inputRect.left}px`,
       width: `${Math.min(inputRect.width, 600)}px`,
-      minWidth: '330px',
+      minWidth: '380px',
       height: 'fit-content',
       backgroundColor: '#18181b',
       borderRadius: '12px',
@@ -145,6 +97,22 @@ export class InputPanel {
     });
 
     return panel;
+  }
+
+  private calculatedTop(inputRect: DOMRect, panelHeight: number): number {
+    // 入力欄の上下のスペースを計算
+    const spaceAbove = inputRect.top;
+    const spaceBelow = window.innerHeight - inputRect.bottom;
+
+    let top: number = 0;
+
+    if (spaceAbove > spaceBelow) {
+      top = spaceAbove - panelHeight - TOP_MARGIN;
+    } else {
+      top = inputRect.bottom + BOTTOM_MARGIN;
+    }
+
+    return top;
   }
 
   private addEventListeners(): void {
