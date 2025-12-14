@@ -1,4 +1,4 @@
-import { performFiltering, sortByMatchPosition } from './utils/filtering';
+import { performFiltering, sortByMatchPosition } from '../utils/filtering';
 
 /** テンプレートアイテムのクリックリスナーを設定 */
 export function setupTemplateItemListeners(iframeDoc: Document): void {

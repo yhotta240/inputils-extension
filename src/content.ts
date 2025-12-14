@@ -1,6 +1,6 @@
 import { InputPanel } from "./content/panel";
 import { getContentEditableParent, getFocusedEditableElement, getInputElement, getInputElementText, isContentEditableElement, isContentEditableTrue, isInputElement } from "./content/input";
-import { getCommandQuery } from "./content/commands";
+import { getCommandQuery } from "./content/utils/commands";
 
 class ContentScript {
   private inputPanel: InputPanel;

@@ -1,4 +1,4 @@
-import { performFiltering, sortByMatchPosition } from './utils/filtering';
+import { performFiltering, sortByMatchPosition } from '../utils/filtering';
 
 /** アイテムのクリックイベントを設定 */
 export function setupUserItemListeners(iframeDoc: Document): void {

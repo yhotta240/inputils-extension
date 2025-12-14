@@ -1,7 +1,7 @@
-import { filterEmojiItems, setupEmojiItemListeners } from "./emojis";
-import { filterTemplateItems, setupTemplateItemListeners } from "./templates";
-import { setupToolItemListeners } from "./tools";
-import { filterUserItems, setupUserItemListeners } from "./users";
+import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
+import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
+import { setupToolItemListeners } from "./features/tools";
+import { filterUserItems, setupUserItemListeners } from "./features/users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
 
