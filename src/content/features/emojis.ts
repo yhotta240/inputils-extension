@@ -1,4 +1,4 @@
-import { performFiltering, sortByMatchPosition } from './utils/filtering';
+import { performFiltering, sortByMatchPosition } from '../utils/filtering';
 
 /** ツールアイテムのクリックイベントを設定 */
 export function setupEmojiItemListeners(iframeDoc: Document): void {

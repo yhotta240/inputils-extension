@@ -1,5 +1,5 @@
-import { generateText } from "../services/gemini";
-import { deleteSelectedText } from "./input";
+import { generateText } from "../../services/gemini";
+import { deleteSelectedText } from "../input";
 
 // ツールとプロンプト生成関数のマップ
 const toolPromptMap: Record<string, (text: string) => string> = {
