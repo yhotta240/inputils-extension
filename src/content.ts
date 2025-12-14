@@ -1,5 +1,6 @@
 import { InputPanel } from "./content/panel";
 import { getContentEditableParent, getFocusedEditableElement, getInputElement, getInputElementText, isContentEditableElement, isContentEditableTrue, isInputElement } from "./content/input";
+import { getCommandQuery } from "./content/commands";
 
 class ContentScript {
   private inputPanel: InputPanel;
@@ -43,30 +44,22 @@ class ContentScript {
       if (!isContentEditableTrue(focusedElement)) {
         const editableParent = getContentEditableParent(focusedElement);
         if (editableParent && isContentEditableTrue(editableParent)) {
-          this.handleSelectionChange(editableParent);
+          this.handleInputChange(editableParent);
         }
       } else {
         // フォーカスされている要素が編集可能な要素であれば処理を進める
-        this.handleSelectionChange(focusedElement);
+        this.handleInputChange(focusedElement);
       }
     } else {
-      this.handleSelectionChange(inputElement);
+      this.handleInputChange(inputElement);
     }
   }
 
-  /** 選択範囲が変更されたときの処理 */
-  private handleSelectionChange(targetElement: HTMLElement) {
+  /** 入力内容の変更を処理 */
+  private handleInputChange(targetElement: HTMLElement) {
     const text = getInputElementText(targetElement);
     const selection = window.getSelection();
-
-    const getQuery = (commandChar: string) => {
-      if (text.startsWith(commandChar)) {
-        return text.substring(1);
-      } else {
-        const lastColonIndex = text.lastIndexOf(commandChar);
-        return text.substring(lastColonIndex + 1);
-      }
-    };
+    const panelIframe = this.inputPanel.getIframe();
 
     // 重複発火防止
     if (text === this.lastProcessedText) {
@@ -75,36 +68,30 @@ class ContentScript {
     }
     this.lastProcessedText = text;
 
-    if (text.length > 0) {
-      if (text.startsWith("/")) {
-        // テンプレートコマンドが入力されたとき
-        const searchQuery = text.substring(1); // "/"以降の文字列を取得
-        this.inputPanel.getIframe().activeTemplatesTab();
-        this.inputPanel.getIframe().filterTemplates(searchQuery);
-        this.inputPanel.show(targetElement);
-      } else if (selection && selection.toString().length > 0) {
-        //input要素内でテキストが選択されたとき
-        const selectedText = selection.toString();
-        this.inputPanel.getIframe().activeToolsTab();
-        this.inputPanel.show(targetElement);
-        this.inputPanel.getIframe().setSelectedText(selectedText);
-      } else if (text.startsWith(':') || text.includes(':')) {
-        // 絵文字コマンドが入力されたとき
-        this.inputPanel.getIframe().activeEmojisTab();
-        this.inputPanel.getIframe().filterEmojis(getQuery(':'));
-        this.inputPanel.show(targetElement);
-      } else if (text.startsWith('@') || text.includes('@')) {
-        // ユーザコマンドが入力されたとき
-        this.inputPanel.getIframe().activeUsersTab();
-        this.inputPanel.getIframe().filterUsers(getQuery('@'));
-        this.inputPanel.show(targetElement);
-      } else {
-        this.inputPanel.hide();
-      }
+    const templateQuery = getCommandQuery(text, "templates");
+    const emojiQuery = getCommandQuery(text, "emojis");
+    const userQuery = getCommandQuery(text, "users");
+
+    if (templateQuery !== null) {
+      panelIframe.activeTemplatesTab();
+      panelIframe.filterTemplates(templateQuery);
+    } else if (selection && selection.toString().length > 0) {
+      const selectedText = selection.toString();
+      panelIframe.activeToolsTab();
+      panelIframe.setSelectedText(selectedText);
+    } else if (emojiQuery !== null) {
+      panelIframe.activeEmojisTab();
+      panelIframe.filterEmojis(emojiQuery);
+    } else if (userQuery !== null) {
+      panelIframe.activeUsersTab();
+      panelIframe.filterUsers(userQuery);
     } else {
       this.inputPanel.hide();
+      return;
     }
-  };
+
+    this.inputPanel.show(targetElement);
+  }
 }
 
 new ContentScript();
