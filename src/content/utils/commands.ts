@@ -1,4 +1,4 @@
-import { CONFIG, FeatureKey } from "../settings";
+import { CONFIG, FeatureKey } from "../../settings";
 
 const features = CONFIG.features;
 
