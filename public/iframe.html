@@ -78,8 +78,11 @@
         </select>
 
         <!-- 絵文字の名前 -->
-        <div class="" id="emojis-name-container">
-          <div id="emoji-name" class="text-white d-none fs-6 ps-3">絵文字名</div>
+        <div id="emojis-name-container">
+          <div id="emoji-name" class="text-white d-none fs-6 ps-3"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+            絵文字名
+          </div>
         </div>
       </div>
 
@@ -147,142 +150,144 @@
       </div>
     </div>
 
-    <!-- タブコンテンツ -->
-    <div class="tab-content">
-      <!-- 定型文タブ -->
-      <div class="tab-pane fade show active pt-2" id="templates">
-        <div class="d-flex justify-content-between align-items-center">
-          <button id="templates-left-arrow" type="button" class="btn p-0 btn-arrow">
-            <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
-          </button>
-          <div class="d-flex w-100 overflow-x-auto btn-container gap-1" role="group">
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
-              data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
-              <small class="text-custom d-block">お世話になっております...</small>
+    <div class="row m-0">
+      <!-- タブコンテンツ -->
+      <div id="tab-contents" class="tab-content col-10 ps-0 pe-1">
+        <!-- 定型文タブ -->
+        <div class="tab-pane fade show active pt-2" id="templates">
+          <div class="d-flex justify-content-between align-items-center">
+            <button id="templates-left-arrow" type="button" class="btn px-0 btn-arrow">
+              <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
-              data-text="ご確認のほどよろしくお願いいたします。&#10;&#10;何かご不明な点がございましたら、お気軽にお申し付けください。">
-              <small class="text-custom d-block">ご確認のほどよろしくお願いいたします...</small>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
-              data-text="お疲れ様です。&#10;&#10;進捗状況について共有させていただきます。">
-              <small class="text-custom d-block">お疲れ様です。進捗状況について...</small>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
-              data-text="ありがとうございます。&#10;&#10;承知いたしました。対応させていただきます。">
-              <small class="text-custom d-block">ありがとうございます。承知いたしました...</small>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
-              data-text="申し訳ございません。&#10;&#10;再度確認の上、ご連絡させていただきます。">
-              <small class="text-custom d-block">申し訳ございません。再度確認の上...</small>
-            </button>
-          </div>
-          <button id="templates-right-arrow" type="button" class="btn p-0 btn-arrow">
-            <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- ツールタブ -->
-      <div class="tab-pane fade" id="tools">
-        <!-- ツールボタン群 -->
-        <div class="d-flex gap-1">
-          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="proofread">
-            <i class="bi bi-file-text me-2"></i><small class="text-custom d-block">添削</small>
-          </button>
-          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="translate">
-            <i class="bi bi-translate me-2"></i><small class="text-custom d-block">翻訳</small>
-          </button>
-          <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="keigo">
-            <i class="bi bi-person-badge me-2"></i><small class="text-custom d-block">敬語</small>
-          </button>
-        </div>
-      </div>
-
-      <!-- 絵文字タブ -->
-      <div class="tab-pane fade pb-2 px-2" id="emojis">
-        <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😀"
-            title="スマイル - smile" data-text="スマイル" data-text-en="smile">
-            <span class="text-custom d-block">😀</span>
-          </button>
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😂"
-            title="笑い - laugh" data-text="笑い" data-text-en="laugh">
-            <span class="text-custom d-block">😂</span>
-          </button>
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😍"
-            title="ハート目 - heart_eyes" data-text="ハート目" data-text-en="heart_eyes">
-            <span class="text-custom d-block">😍</span>
-          </button>
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="👍"
-            title="いいね - thumbs_up" data-text="いいね" data-text-en="thumbs_up">
-            <span class="text-custom d-block">👍</span>
-          </button>
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="🙏"
-            title="お願い - pray" data-text="お願い" data-text-en="pray">
-            <span class="text-custom d-block">🙏</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- ユーザタブ -->
-      <div class="tab-pane fade pb-2 px-2" id="users">
-        <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ1" title="ユーザ1"
-            data-text="ユーザ1">
-            <span class="text-custom d-block">ユーザ1</span>
-          </button>
-          <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ2" title="ユーザ2"
-            data-text="ユーザ2">
-            <span class="text-custom d-block">ユーザ2</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 履歴タブ -->
-      <div class="tab-pane fade pt-2" id="history">
-        <div class="pb-2 d-flex justify-content-between" id="template-chat">
-          <button id="history-left-arrow" type="button" class="btn p-0 btn-arrow">
-            <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
-          </button>
-          <div class="d-flex overflow-x-auto btn-container" role="group" style="gap: 0.5rem;">
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-2"
-              data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
-              <small class="text-custom d-block">お世話になっております...</small>
+            <div class="d-flex w-100 overflow-x-auto btn-container gap-1" role="group">
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+                data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
+                <small class="text-custom d-block">お世話になっております...</small>
+              </button>
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+                data-text="ご確認のほどよろしくお願いいたします。&#10;&#10;何かご不明な点がございましたら、お気軽にお申し付けください。">
+                <small class="text-custom d-block">ご確認のほどよろしくお願いいたします...</small>
+              </button>
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+                data-text="お疲れ様です。&#10;&#10;進捗状況について共有させていただきます。">
+                <small class="text-custom d-block">お疲れ様です。進捗状況について...</small>
+              </button>
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+                data-text="ありがとうございます。&#10;&#10;承知いたしました。対応させていただきます。">
+                <small class="text-custom d-block">ありがとうございます。承知いたしました...</small>
+              </button>
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item"
+                data-text="申し訳ございません。&#10;&#10;再度確認の上、ご連絡させていただきます。">
+                <small class="text-custom d-block">申し訳ございません。再度確認の上...</small>
+              </button>
+            </div>
+            <button id="templates-right-arrow" type="button" class="btn px-0 btn-arrow">
+              <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
           </div>
-          <button id="history-right-arrow" type="button" class="btn p-0 btn-arrow">
-            <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
-          </button>
         </div>
-      </div>
 
-      <!-- 設定タブ -->
-      <div class="tab-pane fade pt-2" id="settings">
-        <div class="list-group list-group-flush">
-          <div
-            class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
-            <div class="d-flex justify-content-between align-items-center">
-              <label for="autoShow" class="form-label mb-0">パネルを自動表示</label>
-              <div class="form-check form-switch mb-0">
-                <input class="form-check-input" type="checkbox" role="switch" id="autoShow" checked>
+        <!-- ツールタブ -->
+        <div class="tab-pane fade" id="tools">
+          <!-- ツールボタン群 -->
+          <div class="d-flex gap-1">
+            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="proofread">
+              <i class="bi bi-file-text me-2"></i><small class="text-custom d-block">添削</small>
+            </button>
+            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="translate">
+              <i class="bi bi-translate me-2"></i><small class="text-custom d-block">翻訳</small>
+            </button>
+            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="keigo">
+              <i class="bi bi-person-badge me-2"></i><small class="text-custom d-block">敬語</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- 絵文字タブ -->
+        <div class="tab-pane fade pb-2 px-2" id="emojis">
+          <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😀"
+              title="スマイル - smile" data-text="スマイル" data-text-en="smile">
+              <span class="text-custom d-block">😀</span>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😂"
+              title="笑い - laugh" data-text="笑い" data-text-en="laugh">
+              <span class="text-custom d-block">😂</span>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😍"
+              title="ハート目 - heart_eyes" data-text="ハート目" data-text-en="heart_eyes">
+              <span class="text-custom d-block">😍</span>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="👍"
+              title="いいね - thumbs_up" data-text="いいね" data-text-en="thumbs_up">
+              <span class="text-custom d-block">👍</span>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="🙏"
+              title="お願い - pray" data-text="お願い" data-text-en="pray">
+              <span class="text-custom d-block">🙏</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ユーザタブ -->
+        <div class="tab-pane fade pb-2 px-2" id="users">
+          <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ1" title="ユーザ1"
+              data-text="ユーザ1">
+              <span class="text-custom d-block">ユーザ1</span>
+            </button>
+            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ2" title="ユーザ2"
+              data-text="ユーザ2">
+              <span class="text-custom d-block">ユーザ2</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 履歴タブ -->
+        <div class="tab-pane fade pt-2" id="history">
+          <div class="pb-2 d-flex justify-content-between" id="template-chat">
+            <button id="history-left-arrow" type="button" class="btn p-0 btn-arrow">
+              <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+            </button>
+            <div class="d-flex overflow-x-auto btn-container" role="group" style="gap: 0.5rem;">
+              <button type="button" class="btn text-white-50 flex-shrink-0 p-2"
+                data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
+                <small class="text-custom d-block">お世話になっております...</small>
+              </button>
+            </div>
+            <button id="history-right-arrow" type="button" class="btn p-0 btn-arrow">
+              <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 設定タブ -->
+        <div class="tab-pane fade pt-2" id="settings">
+          <div class="list-group list-group-flush">
+            <div
+              class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="autoShow" class="form-label mb-0">パネルを自動表示</label>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" role="switch" id="autoShow" checked>
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
-            <div class="d-flex justify-content-between align-items-center">
-              <label for="saveHistory" class="form-label mb-0">入力履歴を保存</label>
-              <div class="form-check form-switch mb-0">
-                <input class="form-check-input" type="checkbox" role="switch" id="saveHistory" checked>
+            <div
+              class="list-group-item text-white border-secondary border-0 border-bottom py-2 bg-custom-dark text-custom">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="saveHistory" class="form-label mb-0">入力履歴を保存</label>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" type="checkbox" role="switch" id="saveHistory" checked>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="list-group-item text-white border-secondary border-0 py-2 bg-custom-dark text-custom">
-            <div class="d-flex justify-content-between align-items-center">
-              <label for="shortcut" class="form-label mb-0">ショートカット</label>
-              <input type="text" class="form-control form-control-sm text-white border-secondary" id="shortcut"
-                value="/" maxlength="1" style="width: 60px;">
+            <div class="list-group-item text-white border-secondary border-0 py-2 bg-custom-dark text-custom">
+              <div class="d-flex justify-content-between align-items-center">
+                <label for="shortcut" class="form-label mb-0">ショートカット</label>
+                <input type="text" class="form-control form-control-sm text-white border-secondary" id="shortcut"
+                  value="/" maxlength="1" style="width: 60px;">
+              </div>
             </div>
           </div>
         </div>
