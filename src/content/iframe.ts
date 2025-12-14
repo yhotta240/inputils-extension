@@ -402,4 +402,39 @@ export class IframeContent {
       this.iframeDoc!.querySelector<HTMLElement>(`${dataBsTarget}-name-container`)?.classList.remove('d-none');
     }
   }
+
+  /** 追加情報表示エリアの内容を変更 */
+  public changeExtraContent(
+    charCount: string | number,
+    selectionLength: string | number,
+    lineNumber: string | number,
+    columnNumber: string | number
+  ): void {
+    if (!this.iframeDoc) {
+      // iframeDoc がまだ用意されていない場合は少し遅らせて再実行
+      setTimeout(() => this.changeExtraContent(charCount, selectionLength, lineNumber, columnNumber), 100);
+      return;
+    }
+
+    const charCountElement = this.iframeDoc.querySelector<HTMLElement>('#char-count');
+    const selectionLengthElement = this.iframeDoc.querySelector<HTMLElement>('#selection-length');
+    const lineNumberElement = this.iframeDoc.querySelector<HTMLElement>('#line-number');
+    const columnNumberElement = this.iframeDoc.querySelector<HTMLElement>('#column-number');
+
+    if (charCountElement) {
+      charCountElement.textContent = charCount.toString();
+    }
+
+    if (selectionLengthElement) {
+      selectionLengthElement.textContent = selectionLength.toString();
+    }
+
+    if (lineNumberElement) {
+      lineNumberElement.textContent = lineNumber.toString();
+    }
+
+    if (columnNumberElement) {
+      columnNumberElement.textContent = columnNumber.toString();
+    }
+  }
 }

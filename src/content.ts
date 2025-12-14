@@ -1,6 +1,7 @@
 import { InputPanel } from "./content/panel";
 import { getContentEditableParent, getFocusedEditableElement, getInputElement, getInputElementText, isContentEditableElement, isContentEditableTrue, isInputElement } from "./content/input";
 import { getCommandQuery } from "./content/utils/commands";
+import { computeCaretInfo } from "./content/utils/text";
 
 class ContentScript {
   private inputPanel: InputPanel;
@@ -91,6 +92,11 @@ class ContentScript {
     }
 
     this.inputPanel.show(targetElement);
+
+    const info = computeCaretInfo(targetElement, selection, text);
+
+    // 追加情報を iframe に送信
+    panelIframe.changeExtraContent(info.charCount, info.selectionLength, info.lineNumber, info.columnNumber);
   }
 }
 
