@@ -1,6 +1,6 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
 import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
-import { setupToolItemListeners } from "./features/tools";
+import { filterToolItems, setupToolItemListeners } from "./features/tools";
 import { filterUserItems, setupUserItemListeners } from "./features/users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
@@ -165,6 +165,12 @@ export class IframeContent {
   /** 定型文を検索してフィルタリング */
   public filterTemplates(query: string): void {
     filterTemplateItems(this.iframeDoc!, query);
+  }
+
+  /** ツールを検索してフィルタリング */
+  public filterTools(query: string): void {
+    // 遅延実行で iframeDoc の準備を待つ
+    filterToolItems(this.iframeDoc!, query);
   }
 
   /** 絵文字を検索してフィルタリング */

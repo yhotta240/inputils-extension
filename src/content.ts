@@ -70,16 +70,21 @@ class ContentScript {
     this.lastProcessedText = text;
 
     const templates = getCommandInfo(text, "templates");
+    const tools = getCommandInfo(text, "tools");
     const emojis = getCommandInfo(text, "emojis");
     const users = getCommandInfo(text, "users");
 
     if (templates.matches && templates.isLastMatched) {
       panelIframe.activeTemplatesTab();
       panelIframe.filterTemplates(templates.query);
-    } else if (selection && selection.toString().length > 0) {
-      const selectedText = selection.toString();
+    } else if (selection && selection.toString().length > 0 || (tools.matches && tools.isLastMatched)) {
+      const selectedText = selection && selection.toString().length > 0 ? selection.toString() : "";
       panelIframe.activeToolsTab();
-      panelIframe.setSelectedText(selectedText);
+      if (tools.matches && tools.isLastMatched) {
+        panelIframe.filterTools(tools.query);
+      } else {
+        panelIframe.setSelectedText(selectedText);
+      }
     } else if (emojis.matches && emojis.isLastMatched) {
       panelIframe.activeEmojisTab();
       panelIframe.filterEmojis(emojis.query);

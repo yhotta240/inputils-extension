@@ -1,3 +1,4 @@
+import { performFiltering, resetFilteringExcept, sortByMatchPosition } from "../../content/utils/filtering";
 import { generateText } from "../../services/gemini";
 import { deleteSelectedText } from "../input";
 
@@ -57,4 +58,16 @@ function handleToolClick(item: HTMLElement, getSelectedText: () => string): void
       item.style.pointerEvents = '';
       item.style.opacity = '';
     });
+}
+
+/** ツールアイテムを検索してフィルタリング */
+export function filterToolItems(iframeDoc: Document, query: string): void {
+  resetFilteringExcept(iframeDoc, '.tools-item');
+
+  const matchedItems = performFiltering(iframeDoc, query, '.tools-item');
+
+  // クエリが空でない場合、マッチ位置でソート
+  if (query !== '' && matchedItems.length > 0) {
+    sortByMatchPosition(matchedItems);
+  }
 }

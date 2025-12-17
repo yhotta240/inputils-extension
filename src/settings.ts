@@ -7,10 +7,14 @@ export type Config = {
 export type FeatureKey = "templates" | "tools" | "emojis" | "users";
 
 export type Feature = {
-  type: 'command' | 'select';
+  type: 'command';
   char: string;
-  position: ('start' | 'end')[];
+  position: ('start' | 'end')[]
+  activation?: ActivationCondition;
+  selector?: string;
 };
+
+export type ActivationCondition = 'always' | 'withSelection' | 'withoutSelection';
 
 /** 内部で使用する設定 */
 export const CONFIG: Config = {
@@ -22,9 +26,10 @@ export const CONFIG: Config = {
       position: ['start'],
     },
     tools: {
-      type: 'select',
-      char: '',
-      position: [],
+      type: 'command',
+      char: '>',
+      position: ['start'],
+      activation: 'withSelection',
     },
     emojis: {
       type: 'command',
