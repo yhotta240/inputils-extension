@@ -52,3 +52,22 @@ export function sortByMatchPosition(
     container.appendChild(item.element);
   });
 }
+
+/** フィルタリングをリセット */
+export function resetFiltering(iframeDoc: Document, itemSelector: string): void {
+  if (!iframeDoc) return;
+  const items = iframeDoc.querySelectorAll<HTMLElement>(itemSelector);
+  items.forEach(item => {
+    item.style.display = '';
+  });
+}
+
+/** 特定のセレクタ以外のフィルタリングをリセット */
+export function resetFilteringExcept(iframeDoc: Document, excludeSelector: string): void {
+  const itemSelectors: string[] = [".template-item", ".emoji-item", ".user-item"];
+  itemSelectors.forEach(selector => {
+    if (selector !== excludeSelector) {
+      resetFiltering(iframeDoc, selector);
+    }
+  });
+}

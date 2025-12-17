@@ -1,4 +1,4 @@
-import { performFiltering, sortByMatchPosition } from '../utils/filtering';
+import { performFiltering, resetFilteringExcept, sortByMatchPosition } from '../utils/filtering';
 
 /** アイテムのクリックイベントを設定 */
 export function setupUserItemListeners(iframeDoc: Document): void {
@@ -14,9 +14,12 @@ export function setupUserItemListeners(iframeDoc: Document): void {
 
 /** ユーザアイテムを検索してフィルタリング */
 export function filterUserItems(iframeDoc: Document, query: string): void {
+  // 他のセレクタのフィルタリングをリセット
+  resetFilteringExcept(iframeDoc, '.user-item');
+
   const matchedItems = performFiltering(iframeDoc, query, '.user-item');
 
-  // クエリが空でない場合、マッチ位置でソート
+  // クエリが空でない場合，マッチ位置でソート
   if (query !== '' && matchedItems.length > 0) {
     sortByMatchPosition(matchedItems);
   }
