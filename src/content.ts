@@ -1,6 +1,6 @@
 import { InputPanel } from "./content/panel";
 import { getContentEditableParent, getFocusedEditableElement, getInputElement, getInputElementText, isContentEditableElement, isContentEditableTrue, isInputElement } from "./content/input";
-import { getCommandQuery } from "./content/utils/commands";
+import { getCommandInfo } from "./content/utils/commands";
 import { computeCaretInfo } from "./content/utils/text";
 
 class ContentScript {
@@ -69,23 +69,23 @@ class ContentScript {
     }
     this.lastProcessedText = text;
 
-    const templateQuery = getCommandQuery(text, "templates");
-    const emojiQuery = getCommandQuery(text, "emojis");
-    const userQuery = getCommandQuery(text, "users");
+    const templates = getCommandInfo(text, "templates");
+    const emojis = getCommandInfo(text, "emojis");
+    const users = getCommandInfo(text, "users");
 
-    if (templateQuery !== null) {
+    if (templates.matches && templates.isLastMatched) {
       panelIframe.activeTemplatesTab();
-      panelIframe.filterTemplates(templateQuery);
+      panelIframe.filterTemplates(templates.query);
     } else if (selection && selection.toString().length > 0) {
       const selectedText = selection.toString();
       panelIframe.activeToolsTab();
       panelIframe.setSelectedText(selectedText);
-    } else if (emojiQuery !== null) {
+    } else if (emojis.matches && emojis.isLastMatched) {
       panelIframe.activeEmojisTab();
-      panelIframe.filterEmojis(emojiQuery);
-    } else if (userQuery !== null) {
+      panelIframe.filterEmojis(emojis.query);
+    } else if (users.matches && users.isLastMatched) {
       panelIframe.activeUsersTab();
-      panelIframe.filterUsers(userQuery);
+      panelIframe.filterUsers(users.query);
     } else {
       this.inputPanel.hide();
       return;

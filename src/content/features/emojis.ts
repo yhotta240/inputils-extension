@@ -1,4 +1,4 @@
-import { performFiltering, sortByMatchPosition } from '../utils/filtering';
+import { performFiltering, resetFilteringExcept, sortByMatchPosition } from '../utils/filtering';
 
 /** ツールアイテムのクリックイベントを設定 */
 export function setupEmojiItemListeners(iframeDoc: Document): void {
@@ -24,9 +24,12 @@ export function setupEmojiItemListeners(iframeDoc: Document): void {
 
 /** 絵文字アイテムを検索してフィルタリング */
 export function filterEmojiItems(iframeDoc: Document, query: string): void {
+  // 他のセレクタのフィルタリングをリセット
+  resetFilteringExcept(iframeDoc, '.emoji-item');
+
   const matchedItems = performFiltering(iframeDoc, query, '.emoji-item');
 
-  // クエリが空でない場合、マッチ位置でソート
+  // クエリが空でない場合，マッチ位置でソート
   if (query !== '' && matchedItems.length > 0) {
     sortByMatchPosition(matchedItems);
   }
