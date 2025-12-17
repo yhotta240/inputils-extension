@@ -64,7 +64,7 @@ export function resetFiltering(iframeDoc: Document, itemSelector: string): void 
 
 /** 特定のセレクタ以外のフィルタリングをリセット */
 export function resetFilteringExcept(iframeDoc: Document, excludeSelector: string): void {
-  const itemSelectors: string[] = [".template-item", ".emoji-item", ".user-item"];
+  const itemSelectors: string[] = [".template-item", ".emoji-item", ".tools-item", ".user-item"];
   itemSelectors.forEach(selector => {
     if (selector !== excludeSelector) {
       resetFiltering(iframeDoc, selector);
