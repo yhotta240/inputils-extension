@@ -1,4 +1,5 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
+import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
 import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
 import { filterToolItems, setupToolItemListeners } from "./features/tools";
 import { filterUserItems, setupUserItemListeners } from "./features/users";
@@ -143,6 +144,11 @@ export class IframeContent {
     this.activateTab('#users-tab');
   }
 
+  /** 履歴タブをアクティブにする */
+  public activeHistoryTab(): void {
+    this.activateTab('#history-tab');
+  }
+
   /** 任意のタブをアクティブにする（iframeDoc が null の間は自動リトライ） */
   private activateTab(tabId: string): void {
     const interval = setInterval(() => {
@@ -184,6 +190,12 @@ export class IframeContent {
     filterUserItems(this.iframeDoc!, query);
   }
 
+  /** 履歴を検索してフィルタリング */
+  public filterHistory(query: string): void {
+    // 履歴アイテムのフィルタリング処理をここに実装
+    filterHistoryItems(this.iframeDoc!, query);
+  }
+
   private addEventListeners(): void {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
@@ -191,6 +203,7 @@ export class IframeContent {
     setupToolItemListeners(this.iframeDoc, this.selectedText);
     setupEmojiItemListeners(this.iframeDoc);
     setupUserItemListeners(this.iframeDoc);
+    setupHistoryItemListeners(this.iframeDoc);
     this.setupMouseEventListeners();
     this.setupPanelControlListeners();
     this.setupArrowScrollListeners();
@@ -346,7 +359,7 @@ export class IframeContent {
   /** スクロール量を計算 */
   private calculateScrollAmount(container: HTMLElement): number {
     const containerWidth = container.clientWidth;
-    const firstButton = container.querySelector<HTMLElement>('.template-item, button');
+    const firstButton = container.querySelector<HTMLElement>('.item, button');
 
     if (firstButton) {
       const buttonWidth = firstButton.offsetWidth;
