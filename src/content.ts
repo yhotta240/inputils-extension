@@ -73,6 +73,7 @@ class ContentScript {
     const tools = getCommandInfo(text, "tools");
     const emojis = getCommandInfo(text, "emojis");
     const users = getCommandInfo(text, "users");
+    const history = getCommandInfo(text, "history");
 
     if (templates.matches && templates.isLastMatched) {
       panelIframe.activeTemplatesTab();
@@ -91,6 +92,9 @@ class ContentScript {
     } else if (users.matches && users.isLastMatched) {
       panelIframe.activeUsersTab();
       panelIframe.filterUsers(users.query);
+    } else if (history.matches && history.isLastMatched) {
+      panelIframe.activeHistoryTab();
+      panelIframe.filterHistory(history.query);
     } else {
       this.inputPanel.hide();
       return;

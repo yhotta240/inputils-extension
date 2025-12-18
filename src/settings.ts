@@ -4,7 +4,7 @@ export type Config = {
   features: Record<FeatureKey, Feature>;
 };
 
-export type FeatureKey = "templates" | "tools" | "emojis" | "users";
+export type FeatureKey = "templates" | "tools" | "emojis" | "users" | "history";
 
 export type Feature = {
   type: 'command';
@@ -40,6 +40,11 @@ export const CONFIG: Config = {
       type: 'command',
       char: '@',
       position: ['start', 'end'],
+    },
+    history: {
+      type: 'command',
+      char: '!',
+      position: ['start'],
     },
   },
 };
