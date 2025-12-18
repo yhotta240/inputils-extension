@@ -10,17 +10,17 @@ const toolPromptMap: Record<string, (text: string) => string> = {
 };
 
 /** ツールアイテムのクリックイベントを設定 */
-export function setupToolItemListeners(iframeDoc: Document, getSelectedText: () => string): void {
+export function setupToolItemListeners(iframeDoc: Document, selectedText: string): void {
   const toolItems = iframeDoc.querySelectorAll<HTMLElement>('.tools-item');
   toolItems.forEach(item => {
-    item.addEventListener('click', () => handleToolClick(item, getSelectedText));
+    item.addEventListener('click', () => handleToolClick(item, selectedText));
   });
 }
 
 /** ツールアイテムクリック時の処理 */
-function handleToolClick(item: HTMLElement, getSelectedText: () => string): void {
+function handleToolClick(item: HTMLElement, selectedText: string): void {
   const tool = item.getAttribute('data-tool') || '';
-  const text = getSelectedText();
+  const text = selectedText;
 
   if (text.length === 0) {
     console.warn("選択されたテキストがありません");

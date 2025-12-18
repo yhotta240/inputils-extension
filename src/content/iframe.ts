@@ -188,7 +188,7 @@ export class IframeContent {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
     setupTemplateItemListeners(this.iframeDoc);
-    setupToolItemListeners(this.iframeDoc, () => this.selectedText);
+    setupToolItemListeners(this.iframeDoc, this.selectedText);
     setupEmojiItemListeners(this.iframeDoc);
     setupUserItemListeners(this.iframeDoc);
     this.setupMouseEventListeners();
