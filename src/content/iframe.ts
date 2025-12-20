@@ -13,7 +13,7 @@ export class IframeContent {
   private expandedHeight: number = 0; // 展開時の実際の高さ
   private isExpanded: boolean = false; // 展開状態
   private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
-  private selectedText: string = '';
+  private targetText: string = '';
   private listenersInitialized: boolean = false;
 
   constructor() { }
@@ -120,8 +120,8 @@ export class IframeContent {
   }
 
   /** 選択されたテキストを設定 */
-  public setSelectedText(text: string): void {
-    this.selectedText = text;
+  public setTargetText(text: string): void {
+    this.targetText = text;
   }
 
   /** 定型文タブをアクティブにする */
@@ -200,7 +200,7 @@ export class IframeContent {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
     setupTemplateItemListeners(this.iframeDoc);
-    setupToolItemListeners(this.iframeDoc, this.selectedText);
+    setupToolItemListeners(this.iframeDoc, this.targetText);
     setupEmojiItemListeners(this.iframeDoc);
     setupUserItemListeners(this.iframeDoc);
     setupHistoryItemListeners(this.iframeDoc);

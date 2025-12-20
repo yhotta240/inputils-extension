@@ -78,14 +78,14 @@ class ContentScript {
     if (templates.matches && templates.isLastMatched) {
       panelIframe.activeTemplatesTab();
       panelIframe.filterTemplates(templates.query);
-    } else if (selection && selection.toString().length > 0 || (tools.matches && tools.isLastMatched)) {
-      const selectedText = selection && selection.toString().length > 0 ? selection.toString() : "";
+    } else if ((selection && selection.toString().length > 0) || (tools.matches && tools.isLastMatched)) {
       panelIframe.activeToolsTab();
+      let targetText = selection?.toString() ?? '';
       if (tools.matches && tools.isLastMatched) {
         panelIframe.filterTools(tools.query);
-      } else {
-        panelIframe.setSelectedText(selectedText);
+        targetText = tools.target;
       }
+      panelIframe.setTargetText(targetText);
     } else if (emojis.matches && emojis.isLastMatched) {
       panelIframe.activeEmojisTab();
       panelIframe.filterEmojis(emojis.query);
