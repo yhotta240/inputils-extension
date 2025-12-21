@@ -4,19 +4,20 @@ export type ToolItem = {
   description: string;
   icon: string;
   mode: 'insert' | 'replace' | 'delete';
-  source: 'local' | 'api' | 'plugin'; // ツールの実装方法 local: ローカル関数，api: API経由（AI生成・外部API），plugin: ユーザー追加プラグイン
+  source: 'local' | 'ai' | 'api' | 'plugin'; // ツールの実装方法 local: ローカル関数，ai: AI生成，api: 外部API，plugin: ユーザー追加プラグイン
   tags?: string[];
   function?: (text: string) => string; // ローカル関数の場合の処理内容
+  systemPrompt?: string; // AI生成の場合のシステムプロンプト
 };
 
 /** ツールのリスト */
 export const toolsList: ToolItem[] = [
-  { key: 'correct', name: '添削', description: '文章を添削します', icon: 'bi bi-file-text', mode: 'insert', source: 'api', tags: ['correct', 'correction', '添削', 'てんさく'] },
-  { key: 'translate', name: '翻訳', description: '文章を日本語に翻訳します', icon: 'bi bi-translate', mode: 'insert', source: 'api', tags: ['translate', 'translation', '翻訳', 'ほんやく'] },
-  { key: 'keigo', name: '敬語変換', description: '文章を丁寧な敬語に書き換えます', icon: 'bi bi-person-badge', mode: 'insert', source: 'api', tags: ['keigo', '敬語', 'けいご'] },
-  { key: 'summarize', name: '要約', description: '文章を要約します', icon: 'bi bi-card-text', mode: 'insert', source: 'api', tags: ['summarize', 'summary', '要約', 'ようやく'] },
-  { key: 'expand', name: '文章拡張', description: '文章をより詳細に拡張します', icon: 'bi bi-arrows-angle-expand', mode: 'insert', source: 'api', tags: ['expand', 'expansion', '拡張', 'かくちょう'], },
-  { key: 'simplify', name: '簡素化', description: '文章を簡素化します', icon: 'bi bi-text-paragraph', mode: 'insert', source: 'api', tags: ['simplify', 'simplification', '簡素化', 'かんそか'] },
+  { key: 'correct', name: '添削', description: '文章を添削します', icon: 'bi bi-file-text', mode: 'insert', source: 'ai', tags: ['correct', 'correction', '添削', 'てんさく'], systemPrompt: '次の文章を添削してください：' },
+  { key: 'translate', name: '翻訳', description: '文章を日本語に翻訳します', icon: 'bi bi-translate', mode: 'insert', source: 'ai', tags: ['translate', 'translation', '翻訳', 'ほんやく'], systemPrompt: '次の文章を日本語に翻訳してください：' },
+  { key: 'keigo', name: '敬語変換', description: '文章を丁寧な敬語に書き換えます', icon: 'bi bi-person-badge', mode: 'insert', source: 'ai', tags: ['keigo', '敬語', 'けいご'], systemPrompt: '次の文章を丁寧な敬語に書き換えてください：' },
+  { key: 'summarize', name: '要約', description: '文章を要約します', icon: 'bi bi-card-text', mode: 'insert', source: 'ai', tags: ['summarize', 'summary', '要約', 'ようやく'], systemPrompt: '次の文章を要約してください：' },
+  { key: 'expand', name: '文章拡張', description: '文章をより詳細に拡張します', icon: 'bi bi-arrows-angle-expand', mode: 'insert', source: 'ai', tags: ['expand', 'expansion', '拡張', 'かくちょう'], systemPrompt: '次の文章をより詳細に拡張してください：' },
+  { key: 'simplify', name: '簡素化', description: '文章を簡素化します', icon: 'bi bi-text-paragraph', mode: 'insert', source: 'ai', tags: ['simplify', 'simplification', '簡素化', 'かんそか'], systemPrompt: '次の文章を簡素化してください：' },
   { key: 'char-between-spaces', name: '文字間に空白挿入', description: '各文字の間に空白を挿入します', icon: 'bi bi-text-indent-left', mode: 'replace', source: 'local', tags: ['char-between-spaces', '文字間に空白挿入', 'もじかんにくうはくそうにゅう'], function: charBetweenSpaces },
   { key: 'delete-space', name: '空白削除', description: '空白を削除します', icon: 'bi bi-backspace', mode: 'delete', source: 'local', tags: ['delete-space', '空白削除', 'くうはくさくじょ'], function: deleteSpace },
   { key: 'space-to-nl', name: '空白を改行に', description: '空白を改行に置換します', icon: 'bi bi-text-wrap', mode: 'replace', source: 'local', tags: ['space-to-nl', '空白を改行に', 'くうはくをかいぎょうに'], function: spaceToNewline },
