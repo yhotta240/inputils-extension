@@ -189,19 +189,14 @@
 
         <!-- ツールタブ -->
         <div class="tab-pane fade" id="tools">
-          <!-- ツールボタン群 -->
-          <div class="d-flex gap-1">
-            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="proofread"
-              data-text="添削" data-text-en="proofread">
-              <i class="bi bi-file-text me-2"></i><small class="text-custom d-block">添削</small>
+          <div class="d-flex justify-content-between align-items-center">
+            <button id="tools-left-arrow" type="button" class="btn px-0 btn-arrow">
+              <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
-            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="translate"
-              data-text="翻訳" data-text-en="translate">
-              <i class="bi bi-translate me-2"></i><small class="text-custom d-block">翻訳</small>
-            </button>
-            <button type="button" class="btn btn-sm btn-dark text-white-50 text-start tools-item" data-tool="keigo"
-              data-text="敬語" data-text-en="keigo">
-              <i class="bi bi-person-badge me-2"></i><small class="text-custom d-block">敬語</small>
+            <!-- ツールボタン群 -->
+            <div id="tools-list" class="d-flex w-100 py-2 overflow-x-auto btn-container gap-1" role="group"></div>
+            <button id="tools-right-arrow" type="button" class="btn px-0 btn-arrow">
+              <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
           </div>
         </div>

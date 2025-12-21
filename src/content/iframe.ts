@@ -1,7 +1,7 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
 import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
 import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
-import { filterToolItems, setupToolItemListeners } from "./features/tools";
+import { filterToolItems, initToolsTab, setupToolItemListeners } from "./features/tools";
 import { filterUserItems, setupUserItemListeners } from "./features/users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
@@ -48,6 +48,9 @@ export class IframeContent {
       iframe.addEventListener('load', () => {
         this.iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
         if (!this.iframeDoc) return;
+
+        // タブの初期化とイベントリスナーの追加
+        this.initTabs();
         this.addEventListeners();
 
         const finalize = () => {
@@ -72,6 +75,7 @@ export class IframeContent {
     return iframe;
   }
 
+  // iframe のロード完了時の設定
   private setupIframeOnLoad(iframe: HTMLIFrameElement): void {
     // 要素作成ヘルパー（CSS/JS リソース）
     const makeLink = (href: string) => {
@@ -196,11 +200,18 @@ export class IframeContent {
     filterHistoryItems(this.iframeDoc!, query);
   }
 
+  /** タブの初期化 */
+  private initTabs(): void {
+    if (!this.iframeDoc) return;
+    initToolsTab(this.iframeDoc);
+  }
+
+  /** 各種イベントリスナーの追加 */
   private addEventListeners(): void {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
     setupTemplateItemListeners(this.iframeDoc);
-    setupToolItemListeners(this.iframeDoc, this.targetText);
+    setupToolItemListeners(this.iframeDoc, () => this.targetText);
     setupEmojiItemListeners(this.iframeDoc);
     setupUserItemListeners(this.iframeDoc);
     setupHistoryItemListeners(this.iframeDoc);
@@ -326,6 +337,7 @@ export class IframeContent {
   private setupArrowScrollListeners(): void {
     this.setupArrowScroll('templates-left-arrow', 'templates-right-arrow');
     this.setupArrowScroll('history-left-arrow', 'history-right-arrow');
+    this.setupArrowScroll('tools-left-arrow', 'tools-right-arrow', 'tools-list');
   }
 
   /** 矢印ボタンでコンテナをスクロールする機能を設定 */

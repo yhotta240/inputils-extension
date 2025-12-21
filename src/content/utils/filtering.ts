@@ -13,13 +13,15 @@ export function performFiltering(
   items.forEach(item => {
     const text = item.getAttribute('data-text-en') || '';
     const enText = item.getAttribute('data-text') || '';
+    const tags = item.getAttribute('data-tags') || '';
     const displayText = item.textContent || '';
 
     // data-text/data-text-en属性または表示テキストに検索文字列が含まれるかチェック
     const textIndex = text.toLowerCase().indexOf(lowerQuery);
     const enTextIndex = enText.toLowerCase().indexOf(lowerQuery);
     const displayIndex = displayText.toLowerCase().indexOf(lowerQuery);
-    const matches = textIndex !== -1 || enTextIndex !== -1 || displayIndex !== -1;
+    const tagsIndex = tags.toLowerCase().indexOf(lowerQuery);
+    const matches = textIndex !== -1 || enTextIndex !== -1 || displayIndex !== -1 || tagsIndex !== -1;
 
     if (query === '' || matches) {
       item.style.display = '';
