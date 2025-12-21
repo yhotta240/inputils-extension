@@ -1,5 +1,5 @@
 import { IframeContent } from "./iframe";
-import { insertEmoji, insertText, insertUser } from "./input";
+import { insertEmoji, insertText, insertTool, insertUser } from "./input";
 
 const TOP_MARGIN: number = 26; // パネルと入力欄の間のマージン
 const BOTTOM_MARGIN: number = 8; // パネルと入力欄の間のマージン
@@ -117,21 +117,27 @@ export class InputPanel {
 
   private addEventListeners(): void {
     // iframeからのメッセージを受信
-    window.addEventListener('message', (event) => {
-      if (event.data.type === 'insertText' && this.input) {
-        insertText(this.input, event.data.text);
+    window.addEventListener('message', (event: MessageEvent<any>) => {
+      const eventData = event.data;
+      const dataType: string = eventData.type;
+
+      if (dataType === 'insertText' && this.input) {
+        insertText(this.input, eventData.text);
         this.hide();
-      } else if (event.data.type === 'insertEmoji' && this.input) {
-        insertEmoji(this.input, event.data.emoji);
-      } else if (event.data.type === 'insertUser' && this.input) {
-        insertUser(this.input, event.data.user);
-      } else if (event.data.type === 'closePanel') {
+      } else if (dataType === 'insertTool' && this.input) {
+        insertTool(this.input, eventData.text, eventData.hasSelection);
         this.hide();
-      } else if (event.data.type === 'frameMouseDown') {
+      } else if (dataType === 'insertEmoji' && this.input) {
+        insertEmoji(this.input, eventData.emoji);
+      } else if (dataType === 'insertUser' && this.input) {
+        insertUser(this.input, eventData.user);
+      } else if (dataType === 'closePanel') {
+        this.hide();
+      } else if (dataType === 'frameMouseDown') {
         this.isClickingPanel = true;
-      } else if (event.data.type === 'frameMouseUp') {
+      } else if (dataType === 'frameMouseUp') {
         this.isClickingPanel = false;
-      } else if (event.data.type === 'expandPanel' && this.input) {
+      } else if (dataType === 'expandPanel' && this.input) {
         // パネルが入力欄の下にあるか判定
         const inputRect = this.input.getBoundingClientRect();
         const isBelowInput = this.iframeContent.isPanelBelowInput(inputRect.bottom);

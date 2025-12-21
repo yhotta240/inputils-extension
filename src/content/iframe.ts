@@ -13,6 +13,7 @@ export class IframeContent {
   private expandedHeight: number = 0; // 展開時の実際の高さ
   private isExpanded: boolean = false; // 展開状態
   private wasBelowInput: boolean = false; // 展開時にパネルが入力欄の下にあったか
+  private hasSelection: boolean = false; // テキストが選択されているモードかどうか
   private targetText: string = '';
   private listenersInitialized: boolean = false;
 
@@ -123,6 +124,11 @@ export class IframeContent {
     return panelTop >= inputBottom;
   }
 
+  /** 選択範囲モードかどうかを設定 */
+  public setHasSelection(hasSelection: boolean): void {
+    this.hasSelection = hasSelection;
+  }
+
   /** 選択されたテキストを設定 */
   public setTargetText(text: string): void {
     this.targetText = text;
@@ -214,7 +220,7 @@ export class IframeContent {
     if (!this.iframeDoc || this.listenersInitialized) return;
 
     setupTemplateItemListeners(this.iframeDoc);
-    setupToolItemListeners(this.iframeDoc, () => this.targetText);
+    setupToolItemListeners(this.iframeDoc, () => this.targetText, () => this.hasSelection);
     setupEmojiItemListeners(this.iframeDoc);
     setupUserItemListeners(this.iframeDoc);
     setupHistoryItemListeners(this.iframeDoc);

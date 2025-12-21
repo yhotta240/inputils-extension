@@ -40,15 +40,15 @@ const toolPromptMap: Record<string, (text: string) => string> = {
 };
 
 /** ツールアイテムのクリックイベントを設定 */
-export function setupToolItemListeners(iframeDoc: Document, setTargetText: () => string): void {
+export function setupToolItemListeners(iframeDoc: Document, targetText: () => string, hasSelection: () => boolean): void {
   const toolItems = iframeDoc.querySelectorAll<HTMLElement>('.tools-item');
   toolItems.forEach(item => {
-    item.addEventListener('click', () => handleToolClick(item, setTargetText()));
+    item.addEventListener('click', () => handleToolClick(item, targetText().trimStart(), hasSelection()));
   });
 }
 
 /** ツールアイテムクリック時の処理 */
-function handleToolClick(item: HTMLElement, targetText: string): void {
+function handleToolClick(item: HTMLElement, targetText: string, hasSelection: boolean): void {
   const tool = item.getAttribute('data-tool') || '';
 
   if (targetText.length === 0) {
@@ -67,7 +67,8 @@ function handleToolClick(item: HTMLElement, targetText: string): void {
       return;
     }
     const result = toolItem.function(targetText);
-    window.parent.postMessage({ type: 'insertText', text: result }, '*');
+    console.log("ローカル処理結果:", targetText, result);
+    window.parent.postMessage({ type: 'insertTool', hasSelection, text: result, preText: targetText }, '*');
   }
 }
 

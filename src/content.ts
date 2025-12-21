@@ -81,9 +81,15 @@ class ContentScript {
     } else if ((selection && selection.toString().length > 0) || (tools.matches && tools.isLastMatched)) {
       panelIframe.activeToolsTab();
       let targetText = selection?.toString() ?? '';
-      if (tools.matches && tools.isLastMatched) {
+      let hasSelection = false;
+      if (selection && selection.toString().length > 0) {
+        hasSelection = true;
         panelIframe.filterTools(tools.query);
+        panelIframe.setHasSelection(hasSelection);
+      } else if (tools.matches && tools.isLastMatched) {
         targetText = tools.target;
+        panelIframe.filterTools(tools.query);
+        panelIframe.setHasSelection(hasSelection);
       }
       panelIframe.setTargetText(targetText);
     } else if (emojis.matches && emojis.isLastMatched) {
