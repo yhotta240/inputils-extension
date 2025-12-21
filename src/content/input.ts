@@ -98,6 +98,22 @@ export function insertText(curInput: HTMLElement, text: string): void {
   }
 }
 
+/**
+ * 指定された入力要素にツールで変換したテキストを挿入する
+ * @param curInput 入力要素
+ * @param text 挿入するテキスト
+ * @param hasSelection 選択範囲モードかどうか
+ */
+export function insertTool(curInput: HTMLElement, text: string, hasSelection: boolean): void {
+  const commandChar = '>';
+
+  if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
+    insertTextForInput(curInput, text, commandChar);
+  } else if (curInput.isContentEditable) {
+    inputTextForContentEditable(curInput, text, commandChar, !hasSelection); // 選択範囲モードでなければ全置換
+  }
+}
+
 /** 指定された入力要素に絵文字を挿入する */
 export function insertEmoji(curInput: HTMLElement, emoji: string): void {
   const commandChar = ':';
@@ -166,7 +182,7 @@ function insertTextForInput(curInput: HTMLInputElement | HTMLTextAreaElement, te
 }
 
 /** contentEditable 要素にテキストを挿入 */
-function inputTextForContentEditable(curInput: HTMLElement, text: string, commandChar: string): void {
+function inputTextForContentEditable(curInput: HTMLElement, text: string, commandChar: string, isAllReplace?: boolean): void {
   curInput.focus();
   const selection = window.getSelection();
 
@@ -178,33 +194,43 @@ function inputTextForContentEditable(curInput: HTMLElement, text: string, comman
     return;
   }
 
+  // 全置換モードの場合はすべてのテキスト全削除してから挿入
+  if (isAllReplace) {
+    const range = selection.getRangeAt(0);
+    range.selectNodeContents(curInput);
+    range.deleteContents();
+  }
+
   try {
     const range = selection.getRangeAt(0);
     const startContainer = range.startContainer;
     const cursorOffset = range.startOffset;
 
-    // カーソル位置より前のテキストを取得して "/" を探す
+    // カーソル位置より前のテキストを取得してコマンドを探す
     const textToSearch = startContainer.textContent?.substring(0, cursorOffset) || '';
-    const slashIndex = textToSearch.lastIndexOf(commandChar);
+    const commandIndex = textToSearch.trim().lastIndexOf(commandChar);
 
-    if (slashIndex >= 0 && 'deleteData' in startContainer) {
-      // "/" が見つかり，deleteDataメソッドが使える場合（Textノード）
+    if (commandIndex >= 0 && 'deleteData' in startContainer) {
+      // コマンドが見つかり，deleteDataメソッドが使える場合（Textノード）
       const textNode = startContainer as Text;
-      textNode.deleteData(slashIndex, cursorOffset - slashIndex);
+      textNode.deleteData(commandIndex, cursorOffset - commandIndex);
 
-      // 範囲を "/" があった位置にセット
-      range.setStart(textNode, slashIndex);
+      // 範囲をコマンドがあった位置にセット
+      range.setStart(textNode, commandIndex);
       range.collapse(true);
-    } else if (slashIndex >= 0) {
+    } else if (commandIndex >= 0) {
       // deleteDataが使えない場合は，Range APIで削除
       const deleteRange = document.createRange();
-      deleteRange.setStart(startContainer, slashIndex);
+      deleteRange.setStart(startContainer, commandIndex);
       deleteRange.setEnd(startContainer, cursorOffset);
       deleteRange.deleteContents();
 
-      // 範囲を "/" があった位置にセット
-      range.setStart(startContainer, slashIndex);
+      // 範囲をコマンドがあった位置にセット
+      range.setStart(startContainer, commandIndex);
       range.collapse(true);
+    } else {
+      // コマンドが見つからない場合は全消し
+      range.deleteContents();
     }
 
     // 新しいテキストノードを挿入
