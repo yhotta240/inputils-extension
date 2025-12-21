@@ -94,7 +94,7 @@ export function insertText(curInput: HTMLElement, text: string): void {
   if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
     insertTextForInput(curInput, text, commandChar);
   } else if (curInput.isContentEditable) {
-    inputTextForContentEditable(curInput, text, commandChar, true);
+    inputTextForContentEditable(curInput, text, commandChar);
   }
 }
 
