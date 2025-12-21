@@ -67,15 +67,26 @@
 <body>
   <div class="container-fluid p-0">
     <div class="d-flex justify-content-between align-items-center sticky-top bg-custom-dark">
-      <div id="name-container" style="width: 35%;">
+      <div id="name-container" class="flex-grow-1 me-2" style="min-width: 0;">
         <!-- 定型文の選択 -->
         <select id="templates-name-container"
-          class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white"
+          class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white w-100"
           aria-label="select example">
           <option value="1" class="bg-custom-dark text-white">One</option>
           <option value="2" class="bg-custom-dark text-white">Two</option>
           <option value="3" class="bg-custom-dark text-white">Three</option>
         </select>
+
+        <!-- ツール対象テキスト -->
+        <div id="tools-name-container">
+          <div id="tools-target-text" class="text-white d-none fs-6 ps-3"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+          </div>
+          <div id="tools-no-target-text" class="text-white-50 fs-6 ps-3"
+            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+            No target text
+          </div>
+        </div>
 
         <!-- 絵文字の名前 -->
         <div id="emojis-name-container">
@@ -88,7 +99,7 @@
 
       <div class="d-flex gap-1 me-2">
         <!-- タブナビゲーション -->
-        <ul class="nav nav-underline gap-1" id="tabs" role="tablist">
+        <ul class="nav nav-underline flex-nowrap gap-1" id="tabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active p-0 text-white-50" id="templates-tab" data-bs-toggle="tab"
               data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="true"

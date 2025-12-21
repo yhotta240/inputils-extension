@@ -98,6 +98,18 @@ function generateAndReplace(item: HTMLElement, prompt: string): void {
     });
 }
 
+/** ツール対象テキストの表示を更新 */
+export function updateToolTargetText(iframeDoc: Document, text: string): void {
+  const targetTextElem = iframeDoc.querySelector('#tools-target-text') as HTMLElement;
+  const isNoText: boolean = text.trim().length === 0;
+  targetTextElem.classList.toggle('d-none', isNoText);
+  targetTextElem.textContent = isNoText ? '' : `target: ${text}`;
+  targetTextElem.title = text;
+
+  const noTargetTextElem = iframeDoc.querySelector('#tools-no-target-text') as HTMLElement;
+  noTargetTextElem.classList.toggle('d-none', !isNoText);
+}
+
 /** ツールアイテムを検索してフィルタリング */
 export function filterToolItems(iframeDoc: Document, query: string): void {
   resetFilteringExcept(iframeDoc, '.tools-item');
