@@ -1,3 +1,5 @@
+import { ToolItem, toolsList } from "./content/features/tool-items";
+
 /** 拡張機能の設定の型定義 */
 export type Config = {
   version: number;
@@ -12,6 +14,7 @@ export type Feature = {
   position: ('start' | 'end')[]
   activation?: ActivationCondition;
   selector?: string;
+  toolsList?: ToolItem[]; // ツールのリスト
 };
 
 export type ActivationCondition = 'always' | 'withSelection' | 'withoutSelection';
@@ -30,6 +33,7 @@ export const CONFIG: Config = {
       char: '>',
       position: ['start'],
       activation: 'withSelection',
+      toolsList: toolsList,
     },
     emojis: {
       type: 'command',
