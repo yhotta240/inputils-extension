@@ -1,7 +1,7 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
 import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
 import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
-import { filterToolItems, initToolsTab, setupToolItemListeners } from "./features/tools";
+import { filterToolItems, initToolsTab, setupToolItemListeners, updateToolTargetText } from "./features/tools";
 import { filterUserItems, setupUserItemListeners } from "./features/users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
@@ -126,6 +126,9 @@ export class IframeContent {
   /** 選択されたテキストを設定 */
   public setTargetText(text: string): void {
     this.targetText = text;
+    if (this.iframeDoc) {
+      updateToolTargetText(this.iframeDoc, text);
+    }
   }
 
   /** 定型文タブをアクティブにする */
