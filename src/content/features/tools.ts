@@ -32,13 +32,6 @@ export function initToolsTab(iframeDoc: Document): void {
   });
 }
 
-// ツールとプロンプト生成関数のマップ
-const toolPromptMap: Record<string, (text: string) => string> = {
-  correct: (text) => `次の文章を添削してください：\n\n${text}`,
-  translate: (text) => `次の文章を日本語に翻訳してください：\n\n${text}`,
-  keigo: (text) => `次の文章を丁寧な敬語に書き換えてください：\n\n${text}`
-};
-
 /** ツールアイテムのクリックイベントを設定 */
 export function setupToolItemListeners(iframeDoc: Document, targetText: () => string, hasSelection: () => boolean): void {
   const toolItems = iframeDoc.querySelectorAll<HTMLElement>('.tools-item');
@@ -49,27 +42,34 @@ export function setupToolItemListeners(iframeDoc: Document, targetText: () => st
 
 /** ツールアイテムクリック時の処理 */
 function handleToolClick(item: HTMLElement, targetText: string, hasSelection: boolean): void {
-  const tool = item.getAttribute('data-tool') || '';
+  const toolKey = item.getAttribute('data-tool') || '';
 
   if (targetText.length === 0) {
     console.log("対象テキストがありません");
     return;
   }
 
-  const promptGenerator: ((text: string) => string) | undefined = toolPromptMap[tool];
-  if (promptGenerator) {
-    const prompt = promptGenerator(targetText);
-    generateAndReplace(item, prompt);
-  } else {
-    const toolItem: ToolItem | undefined = toolsList.find((t: ToolItem) => t.key === tool);
-    if (!toolItem || !toolItem.function) {
-      console.log("未実装のツールです:", tool);
-      return;
-    }
-    const result = toolItem.function(targetText);
-    console.log("ローカル処理結果:", targetText, result);
-    window.parent.postMessage({ type: 'insertTool', hasSelection, text: result, preText: targetText }, '*');
+  const toolItem: ToolItem | undefined = toolsList.find((t: ToolItem) => t.key === toolKey);
+  if (!toolItem) {
+    console.log("ツールが見つかりません:", toolKey);
+    return;
   }
+
+  // AI生成ツール
+  if (toolItem.source === 'ai' && toolItem.systemPrompt) {
+    const prompt = `${toolItem.systemPrompt}\n\n${targetText}`;
+    generateAndReplace(item, prompt);
+    return;
+  }
+
+  // ローカル実行のツール
+  if (toolItem.source === 'local' && toolItem.function) {
+    const result = toolItem.function(targetText);
+    window.parent.postMessage({ type: 'insertTool', hasSelection, text: result, preText: targetText }, '*');
+    return;
+  }
+
+  console.log("未実装のツールです:", toolKey);
 }
 
 /** AI生成を実行して選択範囲を置換 */
