@@ -1,4 +1,4 @@
-import { reloadExtension } from "./dev/reload";
+import { reloadExtension } from "../scripts/reload";
 import { reloadTargetTabs } from "./utils/reload-tabs";
 
 // ターゲットURLパターン（テスト）
