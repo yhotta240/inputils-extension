@@ -1,4 +1,4 @@
-import { PopupPanel } from './components/popup-panel';
+import { PopupPanel } from './popup/panel';
 import { dateTime } from './utils/date';
 import { clickURL } from './utils/dom';
 import { getSiteAccessText } from './utils/permissions';
