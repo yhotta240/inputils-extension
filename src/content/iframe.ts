@@ -117,6 +117,11 @@ export class IframeContent {
     return this.isExpanded;
   }
 
+  /** 展開時の高さを取得 */
+  public getExpandedHeight(): number {
+    return this.expandedHeight;
+  }
+
   /** パネルが入力欄の下にあるかどうかを判定 */
   public isPanelBelowInput(inputBottom: number): boolean {
     if (!this.panel) return false;

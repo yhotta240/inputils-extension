@@ -7,12 +7,12 @@ const DEFAULT_PANEL_HEIGHT: number = 84;
 
 export class InputPanel {
   private panel: HTMLDivElement | null = null;
-  private iframeContent: IframeContent;
+  private iframe: IframeContent;
   private input: HTMLElement | null = null;
   private isClickingPanel: boolean = false;
 
   constructor() {
-    this.iframeContent = new IframeContent();
+    this.iframe = new IframeContent();
     this.addEventListeners();
   }
 
@@ -21,9 +21,9 @@ export class InputPanel {
     return this.isClickingPanel;
   }
 
-  /** iframeContent インスタンスを取得 */
+  /** iframe インスタンスを取得 */
   public getIframe(): IframeContent {
-    return this.iframeContent;
+    return this.iframe;
   }
 
   /** パネルを表示 */
@@ -37,8 +37,8 @@ export class InputPanel {
     }
 
     this.panel = this.createFloatingPanel(input);
-    this.iframeContent.setPanel(this.panel); // パネルを iframeContent に渡す
-    const iframe = await this.iframeContent.create();
+    this.iframe.setPanel(this.panel); // パネルを iframe に渡す
+    const iframe = await this.iframe.create();
     this.panel.appendChild(iframe);
 
     document.body.appendChild(this.panel);
@@ -59,34 +59,39 @@ export class InputPanel {
   private updatePosition(input: HTMLElement): void {
     if (!this.panel) return;
 
-    const inputRect = input.getBoundingClientRect();
+    const inputRect: DOMRect = input.getBoundingClientRect();
+    const panelRect: DOMRect = this.panel.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
 
-    // left が画面外に出ないように調整
-    const left = Math.min(inputRect.left, viewportWidth - Math.min(inputRect.width, 600) - 5);
+    const isIframeExpanded = this.iframe.isExpandedState();
+    const panelHeight = isIframeExpanded ? this.iframe.getExpandedHeight() : DEFAULT_PANEL_HEIGHT;
 
-    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const top: number = this.calculatedTop(inputRect, panelHeight);
+    const left: number = Math.min(inputRect.left, viewportWidth - panelRect.width - 10);
+    const width: number = Math.min(inputRect.width, 600);
 
     // 最終位置の適用
     this.panel.style.top = `${top}px`;
     this.panel.style.left = `${left}px`;
-    this.panel.style.width = `${Math.min(inputRect.width, 600)}px`;
-    this.panel.style.backgroundColor = '#18181b';
+    this.panel.style.width = `${width}px`;
+    this.panel.style.backgroundColor = '#030303ff';
   }
 
   private createFloatingPanel(input: HTMLElement): HTMLDivElement {
     const panel = document.createElement('div');
     panel.id = 'inputils-floating-panel';
-    const inputRect = input.getBoundingClientRect();
 
-    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const inputRect: DOMRect = input.getBoundingClientRect();
+
+    const top: number = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const width: number = Math.min(inputRect.width, 600);
 
     // スタイル設定
     Object.assign(panel.style, {
       position: "fixed",
       top: `${top}px`,
       left: `${inputRect.left}px`,
-      width: `${Math.min(inputRect.width, 600)}px`,
+      width: `${width}px`,
       minWidth: '380px',
       height: 'fit-content',
       backgroundColor: '#18181b',
@@ -140,9 +145,9 @@ export class InputPanel {
       } else if (dataType === 'expandPanel' && this.input) {
         // パネルが入力欄の下にあるか判定
         const inputRect = this.input.getBoundingClientRect();
-        const isBelowInput = this.iframeContent.isPanelBelowInput(inputRect.bottom);
+        const isBelowInput = this.iframe.isPanelBelowInput(inputRect.bottom);
         // パネルを展開
-        this.iframeContent.toggleExpandCollapse(true, isBelowInput);
+        this.iframe.toggleExpandCollapse(true, isBelowInput);
       }
     });
 
