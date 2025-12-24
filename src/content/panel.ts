@@ -59,34 +59,39 @@ export class InputPanel {
   private updatePosition(input: HTMLElement): void {
     if (!this.panel) return;
 
-    const inputRect = input.getBoundingClientRect();
+    const inputRect: DOMRect = input.getBoundingClientRect();
+    const panelRect: DOMRect = this.panel.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
 
-    // left が画面外に出ないように調整
-    const left = Math.min(inputRect.left, viewportWidth - Math.min(inputRect.width, 600) - 5);
+    const isIframeExpanded = this.iframeContent.isExpandedState();
+    const panelHeight = isIframeExpanded ? this.iframeContent.getExpandedHeight() : DEFAULT_PANEL_HEIGHT;
 
-    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const top: number = this.calculatedTop(inputRect, panelHeight);
+    const left: number = Math.min(inputRect.left, viewportWidth - panelRect.width - 10);
+    const width: number = Math.min(inputRect.width, 600);
 
     // 最終位置の適用
     this.panel.style.top = `${top}px`;
     this.panel.style.left = `${left}px`;
-    this.panel.style.width = `${Math.min(inputRect.width, 600)}px`;
-    this.panel.style.backgroundColor = '#18181b';
+    this.panel.style.width = `${width}px`;
+    this.panel.style.backgroundColor = '#030303ff';
   }
 
   private createFloatingPanel(input: HTMLElement): HTMLDivElement {
     const panel = document.createElement('div');
     panel.id = 'inputils-floating-panel';
-    const inputRect = input.getBoundingClientRect();
 
-    let top = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const inputRect: DOMRect = input.getBoundingClientRect();
+
+    const top: number = this.calculatedTop(inputRect, DEFAULT_PANEL_HEIGHT);
+    const width: number = Math.min(inputRect.width, 600);
 
     // スタイル設定
     Object.assign(panel.style, {
       position: "fixed",
       top: `${top}px`,
       left: `${inputRect.left}px`,
-      width: `${Math.min(inputRect.width, 600)}px`,
+      width: `${width}px`,
       minWidth: '380px',
       height: 'fit-content',
       backgroundColor: '#18181b',
