@@ -1,4 +1,4 @@
-import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
+import { filterEmojiItems, initEmojisTab, setupEmojiItemListeners } from "./features/emojis";
 import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
 import { filterTemplateItems, initTemplatesTab, setupTemplateItemListeners } from "./features/templates";
 import { filterToolItems, initToolsTab, setupToolItemListeners, updateToolTargetText } from "./features/tools";
@@ -219,6 +219,7 @@ export class IframeContent {
     if (!this.iframeDoc) return;
     initTemplatesTab(this.iframeDoc);
     initToolsTab(this.iframeDoc);
+    initEmojisTab(this.iframeDoc);
   }
 
   /** 各種イベントリスナーの追加 */

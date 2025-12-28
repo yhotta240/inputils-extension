@@ -166,10 +166,7 @@
               <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
             <div id="templates-list" class="d-flex w-100 overflow-x-auto btn-container gap-1" role="group">
-              <!-- <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
-                data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
-                <small class="text-custom d-block">お世話になっております...</small>
-              </button> -->
+              <!-- 定型文アイテムは動的に生成されます -->
             </div>
             <button id="templates-right-arrow" type="button" class="btn px-0 btn-arrow">
               <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
@@ -184,7 +181,9 @@
               <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
             <!-- ツールボタン群 -->
-            <div id="tools-list" class="d-flex w-100 py-2 overflow-x-auto btn-container gap-1" role="group"></div>
+            <div id="tools-list" class="d-flex w-100 py-2 overflow-x-auto btn-container gap-1" role="group">
+              <!-- ツールアイテムは動的に生成されます -->
+            </div>
             <button id="tools-right-arrow" type="button" class="btn px-0 btn-arrow">
               <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
@@ -193,27 +192,8 @@
 
         <!-- 絵文字タブ -->
         <div class="tab-pane fade pb-2 px-2" id="emojis">
-          <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😀"
-              title="スマイル - smile" data-text="スマイル" data-text-en="smile">
-              <span class="text-custom d-block">😀</span>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😂"
-              title="笑い - laugh" data-text="笑い" data-text-en="laugh">
-              <span class="text-custom d-block">😂</span>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="😍"
-              title="ハート目 - heart_eyes" data-text="ハート目" data-text-en="heart_eyes">
-              <span class="text-custom d-block">😍</span>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="👍"
-              title="いいね - thumbs_up" data-text="いいね" data-text-en="thumbs_up">
-              <span class="text-custom d-block">👍</span>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 emoji-item" data-emoji="🙏"
-              title="お願い - pray" data-text="お願い" data-text-en="pray">
-              <span class="text-custom d-block">🙏</span>
-            </button>
+          <div id="emojis-list" class="d-flex overflow-x-auto btn-container gap-1" role="group">
+            <!-- 絵文字アイテムは動的に生成されます -->
           </div>
         </div>
 
