@@ -4,64 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="iframe.css">
-  <style>
-    body {
-      font-size: 12px !important;
-      background-color: #18181b !important;
-      color: #e5e7eb;
-    }
-
-    .bg-custom-dark {
-      background-color: #18181b !important;
-    }
-
-    .btn-dark {
-      --bs-btn-bg: rgba(24, 24, 27) !important;
-      --bs-btn-border-color: rgba(24, 24, 27) !important;
-      --bs-btn-hover-border-color: rgba(24, 24, 27) !important;
-    }
-
-    /* スクロールバー全体 */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 8px;
-    }
-
-    /* スクロールバーの背景 */
-    ::-webkit-scrollbar-track {
-      border-radius: 10px;
-    }
-
-    /* スクロールバーのつまみ */
-    ::-webkit-scrollbar-thumb {
-      background-color: #888;
-      border-radius: 10px;
-    }
-
-    /* スクロールバーのつまみ（ホバー時） */
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: #555;
-    }
-
-    .text-custom {
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .text-custom:hover {
-      color: white;
-    }
-
-    .text-custom:focus {
-      color: white;
-    }
-
-    .line-clamp-1 {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  </style>
 </head>
 
 <body>
@@ -199,15 +141,8 @@
 
         <!-- ユーザタブ -->
         <div class="tab-pane fade pb-2 px-2" id="users">
-          <div class="d-flex overflow-x-auto btn-container gap-1" role="group">
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ1" title="ユーザ1"
-              data-text="ユーザ1">
-              <span class="text-custom d-block">ユーザ1</span>
-            </button>
-            <button type="button" class="btn text-white-50 flex-shrink-0 p-1 user-item" data-user="ユーザ2" title="ユーザ2"
-              data-text="ユーザ2">
-              <span class="text-custom d-block">ユーザ2</span>
-            </button>
+          <div id="users-list" class="d-flex overflow-x-auto btn-container gap-1" role="group">
+            <!-- ユーザアイテムは動的に生成されます -->
           </div>
         </div>
 

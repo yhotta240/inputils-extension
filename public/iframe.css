@@ -1,0 +1,108 @@
+/* ユーザタブの色アクセントとアバタの枠線 */
+
+/* カラー変数の定義 */
+.color-blue {
+  --accent: #3b82f6;
+}
+
+.color-green {
+  --accent: #10b981;
+}
+
+.color-purple {
+  --accent: #8b5cf6;
+}
+
+.color-orange {
+  --accent: #f59e0b;
+}
+
+.color-pink {
+  --accent: #ec4899;
+}
+
+.color-teal {
+  --accent: #14b8a6;
+}
+
+.color-gray {
+  --accent: #9ca3af;
+}
+
+/* アイテムにカラークラスがある場合のテキストのアクセント */
+.user-item.color-blue .text-custom,
+.user-item.color-green .text-custom,
+.user-item.color-purple .text-custom,
+.user-item.color-orange .text-custom,
+.user-item.color-pink .text-custom,
+.user-item.color-teal .text-custom,
+.user-item.color-gray .text-custom {
+  color: var(--accent);
+}
+
+/* アイテムにカラークラスがある場合のユーザアイコンの境界線のアクセント */
+.user-item.color-blue .user-icon,
+.user-item.color-green .user-icon,
+.user-item.color-purple .user-icon,
+.user-item.color-orange .user-icon,
+.user-item.color-pink .user-icon,
+.user-item.color-teal .user-icon,
+.user-item.color-gray .user-icon {
+  border: 1.5px solid var(--accent);
+}
+
+body {
+  font-size: 12px !important;
+  background-color: #18181b !important;
+  color: #e5e7eb;
+}
+
+.bg-custom-dark {
+  background-color: #18181b !important;
+}
+
+.btn-dark {
+  --bs-btn-bg: rgba(24, 24, 27) !important;
+  --bs-btn-border-color: rgba(24, 24, 27) !important;
+  --bs-btn-hover-border-color: rgba(24, 24, 27) !important;
+}
+
+/* スクロールバー全体 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 8px;
+}
+
+/* スクロールバーの背景 */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* スクロールバーのつまみ */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+/* スクロールバーのつまみ（ホバー時） */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.text-custom {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text-custom:hover {
+  color: white;
+}
+
+.text-custom:focus {
+  color: white;
+}
+
+.line-clamp-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
