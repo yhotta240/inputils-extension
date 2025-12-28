@@ -1,5 +1,5 @@
 import { IframeContent } from "./iframe";
-import { insertEmoji, insertText, insertTool, insertUser } from "./input";
+import { insertText, insertTool, insertEmoji, insertUser, insertHistory } from "./input";
 
 const TOP_MARGIN: number = 26; // パネルと入力欄の間のマージン
 const BOTTOM_MARGIN: number = 8; // パネルと入力欄の間のマージン
@@ -136,6 +136,9 @@ export class InputPanel {
         insertEmoji(this.input, eventData.emoji);
       } else if (dataType === 'insertUser' && this.input) {
         insertUser(this.input, eventData.user);
+      } else if (dataType === 'insertHistory' && this.input) {
+        insertHistory(this.input, eventData.history);
+        this.hide();
       } else if (dataType === 'closePanel') {
         this.hide();
       } else if (dataType === 'frameMouseDown') {

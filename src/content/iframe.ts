@@ -1,5 +1,5 @@
 import { filterEmojiItems, initEmojisTab, setupEmojiItemListeners } from "./features/emojis";
-import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
+import { filterHistoryItems, initHistoryTab, setupHistoryItemListeners } from "./features/history";
 import { filterTemplateItems, initTemplatesTab, setupTemplateItemListeners } from "./features/templates";
 import { filterToolItems, initToolsTab, setupToolItemListeners, updateToolTargetText } from "./features/tools";
 import { filterUserItems, initUsersTab, setupUserItemListeners } from "./features/users";
@@ -223,6 +223,7 @@ export class IframeContent {
     initToolsTab(this.iframeDoc);
     initEmojisTab(this.iframeDoc);
     initUsersTab(this.iframeDoc);
+    initHistoryTab(this.iframeDoc);
   }
 
   /** 各種イベントリスナーの追加 */
@@ -289,7 +290,7 @@ export class IframeContent {
     const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
     const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
     const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
-    const items = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item');
+    const items = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item, .history-item');
 
     if (!expandBtn || !collapseBtn) return;
 
