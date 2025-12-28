@@ -1,8 +1,8 @@
-import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
-import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
-import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
+import { filterEmojiItems, initEmojisTab, setupEmojiItemListeners } from "./features/emojis";
+import { filterHistoryItems, initHistoryTab, setupHistoryItemListeners } from "./features/history";
+import { filterTemplateItems, initTemplatesTab, setupTemplateItemListeners } from "./features/templates";
 import { filterToolItems, initToolsTab, setupToolItemListeners, updateToolTargetText } from "./features/tools";
-import { filterUserItems, setupUserItemListeners } from "./features/users";
+import { filterUserItems, initUsersTab, setupUserItemListeners } from "./features/users";
 
 const DEFAULT_EXPANDED_HEIGHT: number = 250;
 
@@ -95,6 +95,7 @@ export class IframeContent {
     const bootstrapLink = makeLink(chrome.runtime.getURL('bootstrap.css'));
     const bootstrapScript = makeScript(chrome.runtime.getURL('bootstrap.js'));
     const bootstrapIconsLink = makeLink(chrome.runtime.getURL('bootstrap-icons.css'));
+    const iframeCss = makeLink(chrome.runtime.getURL('iframe.css'));
 
     // iframe 内にスタイルとスクリプトを注入
     iframe.addEventListener('load', () => {
@@ -104,6 +105,7 @@ export class IframeContent {
       head.appendChild(bootstrapLink);
       head.appendChild(bootstrapIconsLink);
       body.appendChild(bootstrapScript);
+      head.appendChild(iframeCss);
     }, { once: true });
   }
 
@@ -217,7 +219,11 @@ export class IframeContent {
   /** タブの初期化 */
   private initTabs(): void {
     if (!this.iframeDoc) return;
+    initTemplatesTab(this.iframeDoc);
     initToolsTab(this.iframeDoc);
+    initEmojisTab(this.iframeDoc);
+    initUsersTab(this.iframeDoc);
+    initHistoryTab(this.iframeDoc);
   }
 
   /** 各種イベントリスナーの追加 */
@@ -284,6 +290,7 @@ export class IframeContent {
     const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
     const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
     const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
+    const items = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item, .history-item');
 
     if (!expandBtn || !collapseBtn) return;
 
@@ -292,6 +299,13 @@ export class IframeContent {
     collapseBtn.classList.toggle('d-none', !expand);
     btnArrows.forEach(btn => btn.classList.toggle('d-none', expand));
     btnContainers.forEach(container => container.classList.toggle('d-flex', !expand));
+
+    // アイテム幅の調整
+    // 折りたたみ時は幅50%、展開時は幅100%
+    items.forEach(item => {
+      item.classList.toggle('w-50', !expand);
+      item.classList.toggle('w-100', expand);
+    });
 
     // サイズと位置の更新
     if (expand) {

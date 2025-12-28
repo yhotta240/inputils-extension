@@ -136,6 +136,16 @@ export function insertUser(curInput: HTMLElement, user: string): void {
   }
 }
 
+/** 指定された入力要素に履歴テキストを挿入する */
+export function insertHistory(curInput: HTMLElement, history: string): void {
+  const commandChar = '!';
+
+  if (curInput instanceof HTMLTextAreaElement || curInput instanceof HTMLInputElement) {
+    insertTextForInput(curInput, history, commandChar);
+  } else if (curInput.isContentEditable) {
+    inputTextForContentEditable(curInput, history, commandChar);
+  }
+}
 
 /** input イベントをラップして発火させ，テキストを挿入する */
 function pasteInputEventWrapper(element: HTMLElement, text: string): void {

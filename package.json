@@ -28,6 +28,8 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "css-loader": "^7.1.2",
+    "emojibase": "^17.0.0",
+    "emojibase-data": "^17.0.0",
     "style-loader": "^4.0.0"
   }
 }
