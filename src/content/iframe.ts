@@ -1,6 +1,6 @@
 import { filterEmojiItems, setupEmojiItemListeners } from "./features/emojis";
 import { filterHistoryItems, setupHistoryItemListeners } from "./features/history";
-import { filterTemplateItems, setupTemplateItemListeners } from "./features/templates";
+import { filterTemplateItems, initTemplatesTab, setupTemplateItemListeners } from "./features/templates";
 import { filterToolItems, initToolsTab, setupToolItemListeners, updateToolTargetText } from "./features/tools";
 import { filterUserItems, setupUserItemListeners } from "./features/users";
 
@@ -217,6 +217,7 @@ export class IframeContent {
   /** タブの初期化 */
   private initTabs(): void {
     if (!this.iframeDoc) return;
+    initTemplatesTab(this.iframeDoc);
     initToolsTab(this.iframeDoc);
   }
 
@@ -284,6 +285,7 @@ export class IframeContent {
     const collapseBtn = this.iframeDoc.querySelector<HTMLElement>('#panel-collapse-icon');
     const btnArrows = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-arrow');
     const btnContainers = this.iframeDoc.querySelectorAll<HTMLElement>('.btn-container');
+    const items = this.iframeDoc.querySelectorAll<HTMLElement>('.template-item');
 
     if (!expandBtn || !collapseBtn) return;
 
@@ -292,6 +294,13 @@ export class IframeContent {
     collapseBtn.classList.toggle('d-none', !expand);
     btnArrows.forEach(btn => btn.classList.toggle('d-none', expand));
     btnContainers.forEach(container => container.classList.toggle('d-flex', !expand));
+
+    // アイテム幅の調整
+    // 折りたたみ時は幅50%、展開時は幅100%
+    items.forEach(item => {
+      item.classList.toggle('w-50', !expand);
+      item.classList.toggle('w-100', expand);
+    });
 
     // サイズと位置の更新
     if (expand) {

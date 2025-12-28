@@ -25,29 +25,23 @@
     /* スクロールバー全体 */
     ::-webkit-scrollbar {
       width: 6px;
-      /* 横幅 */
       height: 8px;
-      /* 縦幅 */
     }
 
     /* スクロールバーの背景 */
     ::-webkit-scrollbar-track {
       border-radius: 10px;
-      /* 角丸 */
     }
 
     /* スクロールバーのつまみ */
     ::-webkit-scrollbar-thumb {
       background-color: #888;
-      /* つまみの色 */
       border-radius: 10px;
-      /* 角丸 */
     }
 
     /* スクロールバーのつまみ（ホバー時） */
     ::-webkit-scrollbar-thumb:hover {
       background-color: #555;
-      /* ホバー時の色 */
     }
 
     .text-custom {
@@ -61,6 +55,12 @@
     .text-custom:focus {
       color: white;
     }
+
+    .line-clamp-1 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   </style>
 </head>
 
@@ -72,26 +72,21 @@
         <select id="templates-name-container"
           class="rounded-0 border-0 form-select form-select-sm py-1 bg-custom-dark text-white w-100"
           aria-label="select example">
-          <option value="1" class="bg-custom-dark text-white">One</option>
-          <option value="2" class="bg-custom-dark text-white">Two</option>
-          <option value="3" class="bg-custom-dark text-white">Three</option>
+          <!-- <option value="1" class="bg-custom-dark text-white">One</option> -->
         </select>
 
         <!-- ツール対象テキスト -->
         <div id="tools-name-container">
-          <div id="tools-target-text" class="text-white d-none fs-6 ps-3"
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+          <div id="tools-target-text" class="text-white line-clamp-1 d-none fs-6 ps-3 w-100">
           </div>
-          <div id="tools-no-target-text" class="text-white-50 fs-6 ps-3"
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+          <div id="tools-no-target-text" class="text-white-50 line-clamp-1 fs-6 ps-3 w-100">
             No target text
           </div>
         </div>
 
         <!-- 絵文字の名前 -->
         <div id="emojis-name-container">
-          <div id="emoji-name" class="text-white d-none fs-6 ps-3"
-            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">
+          <div id="emoji-name" class="text-white line-clamp-1 d-none fs-6 ps-3 w-100">
             絵文字名
           </div>
         </div>
@@ -170,27 +165,11 @@
             <button id="templates-left-arrow" type="button" class="btn px-0 btn-arrow">
               <i class="bi bi-caret-left-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
             </button>
-            <div class="d-flex w-100 overflow-x-auto btn-container gap-1" role="group">
-              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
+            <div id="templates-list" class="d-flex w-100 overflow-x-auto btn-container gap-1" role="group">
+              <!-- <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
                 data-text="お世話になっております。&#10;&#10;以下の件について確認させていただきたく、ご連絡いたしました。">
                 <small class="text-custom d-block">お世話になっております...</small>
-              </button>
-              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
-                data-text="ご確認のほどよろしくお願いいたします。&#10;&#10;何かご不明な点がございましたら、お気軽にお申し付けください。">
-                <small class="text-custom d-block">ご確認のほどよろしくお願いいたします...</small>
-              </button>
-              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
-                data-text="お疲れ様です。&#10;&#10;進捗状況について共有させていただきます。">
-                <small class="text-custom d-block">お疲れ様です。進捗状況について...</small>
-              </button>
-              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
-                data-text="ありがとうございます。&#10;&#10;承知いたしました。対応させていただきます。">
-                <small class="text-custom d-block">ありがとうございます。承知いたしました...</small>
-              </button>
-              <button type="button" class="btn text-white-50 flex-shrink-0 p-2 template-item item"
-                data-text="申し訳ございません。&#10;&#10;再度確認の上、ご連絡させていただきます。">
-                <small class="text-custom d-block">申し訳ございません。再度確認の上...</small>
-              </button>
+              </button> -->
             </div>
             <button id="templates-right-arrow" type="button" class="btn px-0 btn-arrow">
               <i class="bi bi-caret-right-fill text-custom" style="font-size: 20px; line-height: 1;"></i>
